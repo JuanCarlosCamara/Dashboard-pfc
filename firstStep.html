@@ -1,0 +1,46 @@
+<html>
+	<head>
+		<title> First Step </title>
+		<meta name="Description" content="Insertion and extraction of json file, and graphical representation of its content" >
+		<style type="text/css">
+			body {
+        margin: 0px;
+        padding: 0px;
+      }
+      #firstGraph, #secondGraph {
+        width : 600px;
+        height: 384px;
+        margin: 8px auto;
+      }
+		</style>
+	</head>
+	<body>
+		<div id="firstGraph"></div>
+		<div id ="secondGraph"></div>
+		<div id="dataForm">
+			<form id="data">
+				<input id="fieldForm" type="decimal" value="0.0" />
+				<button id="formButton">Send</button>
+			</form>
+		</div>
+		
+		<script src="js/flotr2.min.js" type="text/javascript"></script>
+		<script src="js/jquery-1.10.2.min.js" type="text/javascript"></script>
+		<script>
+		
+			$('#formButton').on('click', function(){
+					alert('pressed button');
+				});
+		
+			$(document).ready(function(){
+				
+				data1 = getDataFromJsonFile('firstStepFirstGraph');
+				showGraph(data1, 'firstGraph');
+				data2 = getDataFromJsonFile('firstStepSecondGraph');
+				showGraph(data1, 'secondGraph');				
+				
+				
+			});
+		</script>
+	</body>
+</html>
