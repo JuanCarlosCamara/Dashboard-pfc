@@ -8,8 +8,8 @@
         padding: 0px;
       }
       #firstGraph, #secondGraph {
-        width : 600px;
-        height: 384px;
+        width : 300px;
+        height: 197px;
         margin: 8px auto;
       }
 		</style>
@@ -18,27 +18,70 @@
 		<div id="firstGraph"></div>
 		<div id ="secondGraph"></div>
 		<div id="dataForm">
-			<form id="data">
+			<form id="data" action="#">
 				<input id="fieldForm" type="decimal" value="0.0" />
 				<button id="formButton">Send</button>
 			</form>
 		</div>
 		
 		<script src="js/flotr2.min.js" type="text/javascript"></script>
-		<script src="js/jquery-1.10.2.min.js" type="text/javascript"></script>
+		<script src="js/jquery-1.10.2.js" type="text/javascript"></script>
+		<script src="js/jquery.cookie.js" type="text/javascript"></script>
 		<script>
 		
+			var jsonFirstGraph = '';
+			var jsonSecondGraph = '';
+			
+			function insertNewValue(graph,value){
+			
+				newObject = {
+					'x' : graph.data.length,
+					'y' : value
+				};
+				
+				graph.data[graph.data.length] = newObject;
+			}
+		
 			$('#formButton').on('click', function(){
-					alert('pressed button');
-				});
+				
+				if(jsonFirstGraph == null){
+					jsonFirstGraph = {
+						'type':'area',
+						'data': []
+					};
+				}else{
+					jsonFirstGraph = JSON.parse(jsonFirstGraph);
+				}
+					
+				insertNewValue(jsonFirstGraph, $('#fieldForm').val())
+				$.cookie('firstStepFirstGraph', JSON.stringify(jsonFirstGraph));
+					
+			});
+		
+			function showGraph(json, id){
+				alert(id + ': ' + json);
+			}
 		
 			$(document).ready(function(){
+			
+				/*value = {"type":"area",
+					"data":[{'x':'0','y':'0'},
+					    {'x':'1','y':'1'},
+					    {'x':'2','y':'2'},
+					    {'x':'3','y':'3'},
+					    {'x':'4','y':'4'}]
+				    };
+				    
+				$.cookie('cookie', JSON.stringify(value));*/
 				
-				data1 = getDataFromJsonFile('firstStepFirstGraph');
-				showGraph(data1, 'firstGraph');
-				data2 = getDataFromJsonFile('firstStepSecondGraph');
-				showGraph(data1, 'secondGraph');				
+				jsonFirstGraph = $.cookie('firstStepFirstGraph');
+				jsonSecondGraph = $.cookie('firstStepSecondGraph');
 				
+				if(jsonFirstGraph != null)
+					showGraph(jsonFirstGraph,"firstGraph");
+				
+				if(jsonSecondGraph != null)
+					showGraph(jsonSecondGraph,"secondGraph");
 				
 			});
 		</script>
