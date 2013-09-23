@@ -38,3 +38,10 @@
 	static info in the server side, but some kind of intelligence is necessary, like Java or PHP. On the other hand, the json file can be
 	stored in the client side, as cookies. This is the way it's going to be used. Jquery.cookies.js plugin will be used to make the work 
 	with cookies easier.
+
+23/09/2013 18:53
+
+    The first step is almost finished. It includes a simple header, with two titles, two graphs and one form. The form is used to add data
+    to the json files. These json files will be stored locally in the client side as cookies. To encode and decode the json files (cookies), 
+    the javascript methods JSON.parse and JSON.stringify will be used, respectively. The page structure will be divided into main html file,
+    which contains the tags, css stylesheet file and js javascript files. 
