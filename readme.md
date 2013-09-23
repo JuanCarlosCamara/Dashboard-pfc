@@ -31,3 +31,10 @@
     for the previous documentation will be executed.
     In the end, today I have not finished the first step. Today I have done a simple example of the flotr2 library. I think that can be a
     good idea to create some kine of 'anexo' just destinated to documentate the different options for this library.
+    
+23/09/2013 10.33
+
+	From last days, it have been seen that it's possible to store the json file in two different ways. On one hand, it's possible to store
+	static info in the server side, but some kind of intelligence is necessary, like Java or PHP. On the other hand, the json file can be
+	stored in the client side, as cookies. This is the way it's going to be used. Jquery.cookies.js plugin will be used to make the work 
+	with cookies easier.

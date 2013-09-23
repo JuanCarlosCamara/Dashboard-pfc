@@ -34,10 +34,7 @@
 			
 			function insertNewValue(graph,value){
 			
-				newObject = {
-					'x' : graph.data.length,
-					'y' : value
-				};
+				newObject = [graph.data.length, parseInt(value)];
 				
 				graph.data[graph.data.length] = newObject;
 			}
@@ -45,24 +42,59 @@
 			$('#formButton').on('click', function(){
 				
 				if(jsonFirstGraph == null){
+				
 					jsonFirstGraph = {
 						'type':'area',
 						'data': []
 					};
+					
 				}else{
 					jsonFirstGraph = JSON.parse(jsonFirstGraph);
 				}
+				
+				if(jsonSecondGraph == null){
+				
+					jsonSecondGraph = {
+						'type':'bars',
+						'data': []
+					};
 					
-				insertNewValue(jsonFirstGraph, $('#fieldForm').val())
+				}else{
+					jsonSecondGraph = JSON.parse(jsonSecondGraph);
+				}
+					
+				insertNewValue(jsonFirstGraph, $('#fieldForm').val());
 				$.cookie('firstStepFirstGraph', JSON.stringify(jsonFirstGraph));
+				
+				jsonFirstGraph = JSON.stringify(jsonFirstGraph);
+				showGraph(jsonFirstGraph,"firstGraph");
+				
+				insertNewValue(jsonSecondGraph, $('#fieldForm').val());
+				$.cookie('firstStepSecondGraph', JSON.stringify(jsonSecondGraph));
+				
+				jsonSecondGraph = JSON.stringify(jsonSecondGraph);
+				showGraph(jsonSecondGraph,"secondGraph");
 					
 			});
 		
 			function showGraph(json, id){
-				alert(id + ': ' + json);
+			
+				id = document.getElementById(id);
+			
+				data = JSON.parse(json).data;
+				alert(data);
+			
+				graph = Flotr.draw(id, data, {
+				  xaxis: {
+				      minorTickFreq: 4
+			    },
+			    grid: {
+			    	minorVerticalLines: true
+				  }
+				});
 			}
 		
-			$(document).ready(function(){
+			(function(){
 			
 				/*value = {"type":"area",
 					"data":[{'x':'0','y':'0'},
@@ -83,7 +115,7 @@
 				if(jsonSecondGraph != null)
 					showGraph(jsonSecondGraph,"secondGraph");
 				
-			});
+			})();
 		</script>
 	</body>
 </html>
