@@ -1,84 +1,36 @@
-	var jsonFirstGraph = '';
-	var jsonSecondGraph = '';
+	function showGraph(json_file, container_id, param){
 	
-	function insertNewValue(graph,value){
+	    $.get('json_files/' + json_file,
+	    function(data){
+	        
+	        date = data.date;
+	        data = data[param];
+	        toDraw = [];
+	        for(i = 0; i< date.length;i++){
+	            toDraw[i] = [i,data[i]];
+	        }
+	    
+	        id = document.getElementById(container_id);
+	        
+	        options = {xaxis: {
+            noTicks: 3,
+            tickFormatter: function(x) {
+                x = parseInt(x);
+                return date[x];
+            }
+        }};
 	
-		newObject = [graph.data.length, parseInt(value)];
-		
-		graph.data[graph.data.length] = newObject;
-	}
-
-	$('#formButton').on('click', function(){
-		
-		if(jsonFirstGraph == null){
-		
-			jsonFirstGraph = {
-				'options':{},
-				'data': []
-			};
-			
-		}else{
-			jsonFirstGraph = JSON.parse(jsonFirstGraph);
-		}
-		
-		if(jsonSecondGraph == null){
-		
-			jsonSecondGraph = {
-				'options':{
-          bars: {
-            show: true,
-            horizontal: false,
-            shadowSize: 0,
-            barWidth: 1
-          },
-          mouse: {
-            track: true,
-            relative: true
-          },
-          yaxis: {
-            autoscaleMargin: 1
-          },
-        },
-				'data': []
-			};
-			
-		}else{
-			jsonSecondGraph = JSON.parse(jsonSecondGraph);
-		}
-			
-		insertNewValue(jsonFirstGraph, $('#fieldForm').val());
-		$.cookie('firstStepFirstGraph', JSON.stringify(jsonFirstGraph));
-		
-		jsonFirstGraph = JSON.stringify(jsonFirstGraph);
-		showGraph(jsonFirstGraph,"firstGraph");
-		
-		insertNewValue(jsonSecondGraph, $('#fieldForm').val());
-		$.cookie('firstStepSecondGraph', JSON.stringify(jsonSecondGraph));
-		
-		jsonSecondGraph = JSON.stringify(jsonSecondGraph);
-		showGraph(jsonSecondGraph,"secondGraph");
-			
-	});
-
-	function showGraph(json, id){
+		    //data = JSON.parse(json).data;
+//		    options = JSON.parse(json).options;
 	
-		id = document.getElementById(id);
-	
-		data = JSON.parse(json).data;
-		options = JSON.parse(json).options;
-	
-		graph = Flotr.draw(id, [data], options);
+		    graph = Flotr.draw(id, [toDraw], options);
+	    },
+	    'json');
 	}
 
 	(function(){
+    showGraph('json_file1.json',"firstGraph","opened");
 		
-		jsonFirstGraph = $.cookie('firstStepFirstGraph');
-		jsonSecondGraph = $.cookie('firstStepSecondGraph');
-		
-		if(jsonFirstGraph != null)
-			showGraph(jsonFirstGraph,"firstGraph");
-		
-		if(jsonSecondGraph != null)
-			showGraph(jsonSecondGraph,"secondGraph");
+		showGraph('json_file2.json',"secondGraph", "changed");
 		
 	})();
