@@ -12,18 +12,10 @@ body {
   margin: 0px;
   padding: 0px;
 }
-#firstGraph{
+#secondGraph, #firstGraph{
   background: #ffffff;
-  float:left; 
-  width : 600px;
-  height: 384px;
-  margin: 8px auto;
-}
-#secondGraph{
-  background: #ffffff;
-  float:right; 
-  width : 600px;
-  height: 384px;
+  width : 1300px;
+  height: 500px;
   margin: 8px auto;
 }
 form { 

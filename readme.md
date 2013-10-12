@@ -44,4 +44,14 @@
     The first step is almost finished. It includes a simple header, with two titles, two graphs and one form. The form is used to add data
     to the json files. These json files will be stored locally in the client side as cookies. To encode and decode the json files (cookies), 
     the javascript methods JSON.parse and JSON.stringify will be used, respectively. The page structure will be divided into main html file,
-    which contains the tags, css stylesheet file and js javascript files. 
+    which contains the tags, css stylesheet file and js javascript files.
+
+12/10/2013
+
+    On day 07/10/2013, tutor and me met and discover that my planning for the project was not correct. I had to read from a physical json file
+    (which a get call) and draw it using flotr2. The json files with which I'm working right now have been obtained from openstack webpage.
+    I'm also going to start working with gridster (js library for presentation). I should have done some kind of adjunt about Gridster and Flotr2 
+    for 20/10/2013.
+    
+   The firstStep.html page has been udpated. Now it includes two graphs showing the commit temporal evolution of two companies, HP and IBM.
+   These graphs are tracking the mouse and they show the label with value and month. 
