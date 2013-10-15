@@ -1,4 +1,4 @@
-	function showGraph(json_file, container_id, param){
+	function showGraph(json_file, container_id, param, moreOptions){
 	
 	    $.get(json_file,
 	    function(data){
@@ -36,20 +36,57 @@
             }
           };
 	
-		    //data = JSON.parse(json).data;
-//		    options = JSON.parse(json).options;
-	
-		    graph = Flotr.draw(id, [toDraw], options);
-	    },
-	    'json');
+	        options = Flotr._.extend(Flotr._.clone(options), moreOptions);
+		    
+		        // Draw graph with default options, overwriting with passed options
+
+          function drawGraph(opts) {
+
+              // Clone the options, so the 'options' variable always keeps intact.
+              var o = Flotr._.extend(Flotr._.clone(options), opts || {});
+
+              // Return a new graph.
+              return Flotr.draw(
+              id, [toDraw], o);
+          }
+
+          // Actually draw the graph.
+          graph = drawGraph();
+
+          // Hook into the 'flotr:select' event.
+          Flotr.EventAdapter.observe(id, 'flotr:select', function(area) {
+
+              // Draw graph with new area
+              graph = drawGraph({
+                  xaxis: {
+                      min: area.x1,
+                      max: area.x2
+                  },
+                  yaxis: {
+                      min: area.y1,
+                      max: area.y2
+                  }
+              });
+          });
+
+          // When graph is clicked, draw the graph with default area.
+          Flotr.EventAdapter.observe(id, 'flotr:click', function() {
+              drawGraph();
+          });
+		      
+	      },
+	      'json');
 	}
 
 	(function(){
 	
 	  file = 'json_files/scm-companies-commits-summary.json';
 	
-    showGraph(file,"firstGraph","HP");
+    showGraph(file,"firstGraph","HP",{});
 		
-		showGraph(file,"secondGraph", "IBM");
+		showGraph(file,"secondGraph", "IBM", {selection : {
+      mode: 'x',
+      fps: 30
+    },lines : {fill : true}});
 		
 	})();

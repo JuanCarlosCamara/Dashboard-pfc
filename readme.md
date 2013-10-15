@@ -55,3 +55,7 @@
     
    The firstStep.html page has been udpated. Now it includes two graphs showing the commit temporal evolution of two companies, HP and IBM.
    These graphs are tracking the mouse and they show the label with value and month. 
+   
+15/10/2013
+  I have added some more options to the second graph. Now it's possible to zoom it and graph has been filled with blue color.
+  I'm going to start working with Gridster soon.
