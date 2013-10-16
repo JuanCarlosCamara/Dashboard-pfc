@@ -59,3 +59,6 @@
 15/10/2013
   I have added some more options to the second graph. Now it's possible to zoom it and graph has been filled with blue color.
   I'm going to start working with Gridster soon.
+  
+15/10/2013
+  I have done some simple example combining Jquery mobile, flotr2 and gridster. 
