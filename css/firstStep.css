@@ -15,7 +15,7 @@ body {
 #secondGraph, #firstGraph{
   background: #ffffff;
   width : 100%;
-  height: 500px;
+  height : 100%;
   margin: 8px auto;
 }
 form { 
