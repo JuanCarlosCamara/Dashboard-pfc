@@ -23,12 +23,12 @@ $(document).ready(function(){
 
 function drawGraph(index){
   
-   json_file = "json_files/json_file" + index + ".json";
+  json_file = "json_files/json_file" + index + ".json";
   
   $.get(json_file,
     function(data){
-      data = data.changers;
-
+    
+      data = data.commits;
       toDraw = [];
 
       for(i = 0; i< data.length;i++){
