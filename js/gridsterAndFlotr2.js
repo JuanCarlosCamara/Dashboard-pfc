@@ -14,7 +14,11 @@ $(document).ready(function(){
     var gridster = $(".gridster ul").gridster().data('gridster');
     next = gridster.serialize().length;
     
-    gridster.add_widget('<li class="new"><div id="graph' + next + '" style="width:100%; height:100%"></div></li>', 2, 1, (next%widthWidgets)*2 + 1, ~~(next/widthWidgets) + 1);
+    gridster.add_widget('<li class="new externalGraph"><div id="graph' + next + '" class="innerGraph"></div></li>', 2, 1, (next%widthWidgets)*2 + 1, ~~(next/widthWidgets) + 1);
+    
+    $('#graph' + next).on('click',function(){
+        alert(next);
+    });
     
     drawGraph(next);
     
@@ -28,14 +32,26 @@ function drawGraph(index){
   $.get(json_file,
     function(data){
     
+      date = data.date;
       data = data.commits;
+      
       toDraw = [];
 
       for(i = 0; i< data.length;i++){
 	      toDraw[i] = [i,data[i]];
       }
       
-      options = {};
+      options = {
+        title:json_file,
+        HtmlText : false,
+        mouse:{
+              track: true,
+              relative: true,
+              position: 'nw',
+              trackFormatter: function(obj){return 'x = ' + date[parseInt(obj.x)] + ', y = ' + obj.y;},
+              sensibility : 2
+            }
+      };
       container = document.getElementById('graph' + index);
       
       Flotr.draw(container,[toDraw],options); 
