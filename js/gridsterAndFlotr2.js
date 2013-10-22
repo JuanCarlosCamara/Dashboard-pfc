@@ -1,5 +1,7 @@
 $(document).ready(function(){
 
+  $( "#popupBasic" ).popup();
+
   width = $(document).width();
  
   $(".gridster ul").gridster({
@@ -16,19 +18,15 @@ $(document).ready(function(){
     
     gridster.add_widget('<li class="new externalGraph"><div id="graph' + next + '" class="innerGraph"></div></li>', 2, 1, (next%widthWidgets)*2 + 1, ~~(next/widthWidgets) + 1);
     
-    $('#graph' + next).on('click',function(){
-        alert(next);
-    });
-    
     drawGraph(next);
     
   });
 });
 
-function drawGraph(index){
-  
+function drawGraphInContainer(container,index){
+
   json_file = "json_files/json_file" + index + ".json";
-  
+
   $.get(json_file,
     function(data){
     
@@ -52,9 +50,20 @@ function drawGraph(index){
               sensibility : 2
             }
       };
-      container = document.getElementById('graph' + index);
+      
+      container = document.getElementById(container);
       
       Flotr.draw(container,[toDraw],options); 
     }
   );
+}
+
+function drawGraph(index){
+
+  $('#graph' + index).on('click',function(){
+    $( "#popupBasic" ).popup( "open" );
+    drawGraphInContainer('popupBasic',index);
+  });
+  
+  drawGraphInContainer('graph' + index, index)
 }

@@ -10,3 +10,8 @@
   margin: auto;
   position: absolute;
 }
+
+.graphPopup {
+  width: 600px;
+  height:384px;
+}
