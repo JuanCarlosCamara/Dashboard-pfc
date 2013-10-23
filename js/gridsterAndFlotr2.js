@@ -23,7 +23,7 @@ $(document).ready(function(){
   });
 });
 
-function drawGraphInContainer(container,index){
+function drawGraphInContainer(container,index,moreOptions){
 
   json_file = "json_files/json_file" + index + ".json";
 
@@ -43,13 +43,15 @@ function drawGraphInContainer(container,index){
         title:json_file,
         HtmlText : false,
         mouse:{
-              track: true,
-              relative: true,
-              position: 'nw',
-              trackFormatter: function(obj){return 'x = ' + date[parseInt(obj.x)] + ', y = ' + obj.y;},
-              sensibility : 2
-            }
+          track: true,
+          relative: true,
+          position: 'nw',
+          trackFormatter: function(obj){return 'x = ' + date[parseInt(obj.x)] + ', y = ' + obj.y;},
+          sensibility : 2
+        }
       };
+      
+      options = Flotr._.extend(Flotr._.clone(options), moreOptions);
       
       container = document.getElementById(container);
       
@@ -62,8 +64,38 @@ function drawGraph(index){
 
   $('#graph' + index).on('click',function(){
     $( "#popupBasic" ).popup( "open" );
-    drawGraphInContainer('popupBasic',index);
+    drawGraphInContainer('popupBasic',index,{selection : {
+      mode: 'x',
+      fps: 30
+    }});
+    
+    Flotr.EventAdapter.observe(document.getElementById('popupBasic'), 'flotr:select', function(area) {
+
+    // Draw graph with new area
+    graph = drawGraphInContainer('popupBasic',index,{
+      selection:{
+        mode: 'x',
+        fps:30
+      },
+      xaxis: {
+          min: area.x1,
+          max: area.x2
+      },
+      yaxis: {
+          min: area.y1,
+          max: area.y2
+      }
+    });
+  });
+
+  // When graph is clicked, draw the graph with default area.
+  Flotr.EventAdapter.observe(document.getElementById('popupBasic'), 'flotr:click', function() {
+      drawGraphInContainer('popupBasic',index,{selection : {
+      mode: 'x',
+      fps: 30
+    }});
+  });
   });
   
-  drawGraphInContainer('graph' + index, index)
+  drawGraphInContainer('graph' + index, index,{})
 }
