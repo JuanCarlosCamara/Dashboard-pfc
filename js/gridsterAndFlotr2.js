@@ -47,7 +47,7 @@ function drawGraphInContainer(container,index,moreOptions){
           relative: true,
           position: 'nw',
           trackFormatter: function(obj){return 'x = ' + date[parseInt(obj.x)] + ', y = ' + obj.y;},
-          sensibility : 2
+          sensibility : 200
         }
       };
       
@@ -64,37 +64,38 @@ function drawGraph(index){
 
   $('#graph' + index).on('click',function(){
     $( "#popupBasic" ).popup( "open" );
-    drawGraphInContainer('popupBasic',index,{selection : {
+    drawGraphInContainer('popupContainer',index,{selection : {
       mode: 'x',
       fps: 30
     }});
     
-    Flotr.EventAdapter.observe(document.getElementById('popupBasic'), 'flotr:select', function(area) {
+    Flotr.EventAdapter.observe(document.getElementById('popupContainer'), 'flotr:select', function(area) {
 
-    // Draw graph with new area
-    graph = drawGraphInContainer('popupBasic',index,{
-      selection:{
-        mode: 'x',
-        fps:30
-      },
-      xaxis: {
-          min: area.x1,
-          max: area.x2
-      },
-      yaxis: {
-          min: area.y1,
-          max: area.y2
-      }
+      // Draw graph with new area
+      graph = drawGraphInContainer('popupContainer',index,{
+        selection:{
+          mode: 'x',
+          fps:30
+        },
+        xaxis: {
+            min: area.x1,
+            max: area.x2
+        },
+        yaxis: {
+            min: area.y1,
+            max: area.y2
+        }
+      });
     });
-  });
 
-  // When graph is clicked, draw the graph with default area.
-  Flotr.EventAdapter.observe(document.getElementById('popupBasic'), 'flotr:click', function() {
-      drawGraphInContainer('popupBasic',index,{selection : {
-      mode: 'x',
-      fps: 30
-    }});
-  });
+    // When graph is clicked, draw the graph with default area.
+    Flotr.EventAdapter.observe(document.getElementById('popupContainer'), 'flotr:click', function() {
+        drawGraphInContainer('popupContainer',index,{selection : {
+        mode: 'x',
+        fps: 30
+      }});
+    });
+  
   });
   
   drawGraphInContainer('graph' + index, index,{})
