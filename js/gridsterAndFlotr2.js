@@ -2,23 +2,30 @@ $(document).ready(function(){
 
   $( "#popupBasic" ).popup();
 
-  width = $(document).width();
+  width = $('#gridster').width();
+  
+  if(width > 1000)
+    widthWidgets = 3;
+  else if (width > 666) 
+    widthWidgets = 2;
+  else
+    widthWidgets = 1;
  
   $(".gridster ul").gridster({
     widget_margins: [10, 10],
-    widget_base_dimensions: [140, 140]
+    widget_base_dimensions: [(width-widthWidgets*10)/widthWidgets, (width-widthWidgets*10)/(2*widthWidgets)]
   });
-  
-  widthWidgets = ~~(width / (140*2));
 
-  $('#addChartButton').on('click', function(){
+  $('#addChartList').on('click', function(){
     
     var gridster = $(".gridster ul").gridster().data('gridster');
     next = gridster.serialize().length;
     
-    gridster.add_widget('<li class="new externalGraph"><div id="graph' + next + '" class="innerGraph"></div></li>', 2, 1, (next%widthWidgets)*2 + 1, ~~(next/widthWidgets) + 1);
+    gridster.add_widget('<li class="new externalGraph"><div id="graph' + next + '" class="innerGraph"></div></li>', 1, 1, (next%widthWidgets) + 1, ~~(next/widthWidgets) + 1);
     
     drawGraph(next);
+    
+    $('#addPanel').panel("close");
     
   });
 });

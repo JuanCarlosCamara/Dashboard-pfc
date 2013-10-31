@@ -3,6 +3,7 @@
   <head>
     <title> Gridster and Flotr2 example </title>
     <meta name="Description" content="Gridster and Flotr2 example"/>
+    <meta name="viewport" content="width=device-width, user-scalable=no">
     <link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.css" />
 		<link rel="stylesheet" type="text/css" href="css/jquery.gridster.min.css"/>
 		<link rel="stylesheet" type="text/css" href="css/gridsterAndFlotr2.css"/>
@@ -13,14 +14,21 @@
 		<script src="js/gridsterAndFlotr2.js" type="text/javascript"></script>
   </head>
   <body>
-    <div data-role="page">			
+    <div data-role="page">
+      <div data-role="panel" id="addPanel" data-display="overlay">
+        <ul data-role="listview" data-theme="a">
+          <li><a href="#" id="addChartList"> Add chart </a></li>
+          <li><a href="#">Audi</a></li>
+          <li><a href="#">BMW</a></li>
+        </ul>
+      </div><!-- /panel -->			
       <div data-role="header" data-position="fixed">
         <h1>Main page</h1>
-        <a href="#" id="addChartButton" data-role="button" data-icon="plus"> Add chart </a>
+        <a href="#addPanel" id="addChartButton" data-role="button" data-icon="plus"> Add chart </a>
       </div><!-- header -->
       <div data-role="content">
         <div class="gridster">
-          <ul></ul>
+          <ul id="gridster"></ul>
         </div>
       </div><!-- content -->
       <div data-role="popup" id="popupBasic" data-transition="flip">
