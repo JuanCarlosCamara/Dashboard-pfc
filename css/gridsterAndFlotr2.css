@@ -15,3 +15,8 @@
   width: 600px;
   height:384px;
 }
+
+.widgetTitle{
+  background:#34fe56;
+  cursor: move;
+}

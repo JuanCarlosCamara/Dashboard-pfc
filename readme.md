@@ -62,3 +62,9 @@
   
 15/10/2013
   I have done some simple example combining Jquery mobile, flotr2 and gridster. 
+  
+1/11/2013
+  The simple example is now a bit more complex. It nows includes a slide side panel where user can add different graphs. Example includes now
+  automatic widget size calculation, dependent of the browser width. Widgets have been changed to be only draggable in title region. Widgets show
+  mouse tracker and, if user click on graph, a widget popup is shown and user can zoom on the graph
+  

@@ -13,7 +13,10 @@ $(document).ready(function(){
  
   $(".gridster ul").gridster({
     widget_margins: [10, 10],
-    widget_base_dimensions: [(width-widthWidgets*10)/widthWidgets, (width-widthWidgets*10)/(2*widthWidgets)]
+    widget_base_dimensions: [(width-widthWidgets*10)/widthWidgets, (width-widthWidgets*10)/(2*widthWidgets)],
+    draggable: {
+      handle: '.widgetTitle'
+    }
   });
 
   $('#addChartList').on('click', function(){
@@ -21,7 +24,7 @@ $(document).ready(function(){
     var gridster = $(".gridster ul").gridster().data('gridster');
     next = gridster.serialize().length;
     
-    gridster.add_widget('<li class="new externalGraph"><div id="graph' + next + '" class="innerGraph"></div></li>', 1, 1, (next%widthWidgets) + 1, ~~(next/widthWidgets) + 1);
+    gridster.add_widget('<li class="new externalGraph"><div class="widgetTitle">a</div><div id="graph' + next + '" class="innerGraph"></div></li>', 1, 1, (next%widthWidgets) + 1, ~~(next/widthWidgets) + 1);
     
     drawGraph(next);
     
