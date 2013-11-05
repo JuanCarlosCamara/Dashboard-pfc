@@ -1,6 +1,8 @@
 $(document).ready(function(){
 
   $( "#popupBasic" ).popup();
+  
+  $('#tabs').tabs();
 
   width = $('#gridster').width();
   
@@ -11,7 +13,7 @@ $(document).ready(function(){
   else
     widthWidgets = 1;
  
-  $(".gridster ul").gridster({
+  $("#gridster1").gridster({
     widget_margins: [10, 10],
     widget_base_dimensions: [(width-widthWidgets*10)/widthWidgets, (width-widthWidgets*10)/(2*widthWidgets)],
     draggable: {
@@ -20,20 +22,33 @@ $(document).ready(function(){
   });
 
   $('#addChartList').on('click', function(){
+  
+    var active = $('#tabs').tabs("option","active") + 1;
     
-    var gridster = $(".gridster ul").gridster().data('gridster');
+    var gridster = $("#gridster" + active).gridster().data('gridster');
     next = gridster.serialize().length;
     
-    gridster.add_widget('<li class="new externalGraph"><div class="widgetTitle">a</div><div id="graph' + next + '" class="innerGraph"></div></li>', 1, 1, (next%widthWidgets) + 1, ~~(next/widthWidgets) + 1);
+    gridster.add_widget('<li class="new externalGraph"><div class="widgetTitle">a</div><div id="graph_' + active + '_' + next + '" class="innerGraph"></div></li>', 1, 1, (next%widthWidgets) + 1, ~~(next/widthWidgets) + 1);
     
-    drawGraph(next);
+    drawGraph(active, next);
     
     $('#addPanel').panel("close");
     
   });
+  
+  $('#addTabButton').on('click', function(){
+    var num_tabs = $("#tabList li").length + 1;
+    $("#tabList").append("<li><a href='#tab" + num_tabs + "'>#" + num_tabs + "</a></li>");
+    
+    $("#tabs").append("<div id='tab"+num_tabs+"'><div class='gridster'><ul id='gridster" + num_tabs + "'></ul></div></div>");
+    $("#tabs").tabs("refresh");
+
+  });
 });
 
 function drawGraphInContainer(container,index,moreOptions){
+
+  alert(container);
 
   json_file = "json_files/json_file" + index + ".json";
 
@@ -70,9 +85,9 @@ function drawGraphInContainer(container,index,moreOptions){
   );
 }
 
-function drawGraph(index){
+function drawGraph(active, index){
 
-  $('#graph' + index).on('click',function(){
+  $('#graph_' + active + '_' + index).on('click',function(){
     $( "#popupBasic" ).popup( "open" );
     drawGraphInContainer('popupContainer',index,{selection : {
       mode: 'x',
@@ -108,5 +123,5 @@ function drawGraph(index){
   
   });
   
-  drawGraphInContainer('graph' + index, index,{})
+  drawGraphInContainer('graph_' + active + '_' + index, index,{})
 }
