@@ -4,7 +4,7 @@ $(document).ready(function(){
   
   $('#tabs').tabs();
 
-  width = $('#gridster').width();
+  width = $('#gridster1').width();
   
   if(width > 1000)
     widthWidgets = 3;
@@ -44,11 +44,40 @@ $(document).ready(function(){
     $("#tabs").tabs("refresh");
 
   });
+  
+  $('#addChartButton').on('click',function(){
+  
+    $.ajax({
+      type:'GET',
+      url:'http://localhost:8000/json_files',
+      datatype:'html',
+      success:function(resp){
+      
+        directories = [];
+
+        lis = resp.split('<ul>\n')[1].split('\n</ul>')[0].split('\n');
+      
+        panelList = ""
+      
+        $.each(lis,function(index,item){
+          file = item.split('href=\"')[1].split('\">')[0];
+          if(file.indexOf('/') != -1){
+            directories[directories.length] = file;
+            panelList += '<li><a href="#" id="' + file + '"> ' + file + '</a></li>'
+          }
+        });
+        
+        $('#panelList').html(panelList);
+        $('#panelList').listview("refresh");
+        
+        $('#addPanel').panel('open');
+      }
+    });
+  });
+  
 });
 
 function drawGraphInContainer(container,index,moreOptions){
-
-  alert(container);
 
   json_file = "json_files/json_file" + index + ".json";
 
