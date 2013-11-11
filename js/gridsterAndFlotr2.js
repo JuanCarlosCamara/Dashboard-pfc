@@ -62,13 +62,17 @@ $(document).ready(function(){
         $.each(lis,function(index,item){
           file = item.split('href=\"')[1].split('\">')[0];
           if(file.indexOf('/') != -1){
-            directories[directories.length] = file;
-            panelList += '<li><a href="#" id="' + file + '"> ' + file + '</a></li>'
+            directories[directories.length] = file.split('/')[0];
+            panelList += '<li><a href="#" id="' + file.split('/')[0] + '">' + file.split('/')[0] + '</a></li>';
           }
         });
         
         $('#panelList').html(panelList);
         $('#panelList').listview("refresh");
+        
+        for(i=0;i<directories.length;i++){
+          addDirectoryClickEvent(directories[i]);
+        }
         
         $('#addPanel').panel('open');
       }
@@ -76,6 +80,52 @@ $(document).ready(function(){
   });
   
 });
+
+function addDirectoryClickEvent(directory){
+  
+  $('#' + directory).on('click', function(){
+  
+    $('#addPanel').panel('close');
+  
+    $.ajax({
+      type: 'GET',
+      url: 'http://localhost:8000/json_files/' + directory,
+      datatype: 'html',
+      success: function(resp){
+        
+        files = [];
+        
+        lis = resp.split('<ul>\n')[1].split('\n</ul>')[0].split('\n');
+        
+        panelListDirectory = ""
+      
+        $.each(lis,function(index,item){
+          file = item.split('href=\"')[1].split('\">')[0];
+          files[files.length] = file.split('/')[0];
+          panelListDirectory += '<li><a href="#" id="' + file.split('/')[0] + '">' + file.split('/')[0] + '</a></li>';
+        });
+        
+        $('#panelListDirectory').html(panelListDirectory);
+        $('#panelListDirectory').listview("refresh");
+        
+        for(i=0;i<files.length;i++){
+          addFileClickEvent(files[i], directory);
+        }
+        
+        $('#addPanelDirectory').panel('open');
+      }
+    });
+  });
+}
+
+function addFileClickEvent(file, directory){
+
+  //alert(file);
+
+  $('#' + file).on('click', function(){
+    alert(file);
+  });
+}
 
 function drawGraphInContainer(container,index,moreOptions){
 
