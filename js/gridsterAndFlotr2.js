@@ -4,7 +4,7 @@ $(document).ready(function(){
   
   $('#tabs').tabs();
 
-  width = $('#gridster1').width();
+  width = $('#tab1').width();
   
   if(width > 1000)
     widthWidgets = 3;
@@ -23,7 +23,7 @@ $(document).ready(function(){
   
   $('#addTabButton').on('click', function(){
     var num_tabs = $("#tabList li").length + 1;
-    $("#tabList").append("<li><a href='#tab" + num_tabs + "'>#" + num_tabs + "</a></li>");
+    $("#tabList").append("<li><a href='#tab" + num_tabs + "' contenteditable='true' spellcheck='false'>#" + num_tabs + "</a></li>");
     
     $("#tabs").append("<div id='tab"+num_tabs+"'><div class='gridster'><ul id='gridster" + num_tabs + "'></ul></div></div>");
     $("#tabs").tabs("refresh");
@@ -170,6 +170,15 @@ $(document).ready(function(){
 		
 		options = {
 	        HtmlText : false,
+	        xaxis : {
+	        	tickFormatter: function(x){
+	        		x = parseInt(x);
+	        		return date[x];
+	        	}
+	        },
+	        yaxis : {
+	        	max : Math.max.apply(Math, data) + 1
+	        },
 	        mouse:{
 	          track: true,
 	          relative: true,
