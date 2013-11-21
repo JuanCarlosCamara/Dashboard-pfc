@@ -20,21 +20,6 @@ $(document).ready(function(){
       handle: '.widgetTitle'
     }
   });
-
-  $('#addChartList').on('click', function(){
-  
-    var active = $('#tabs').tabs("option","active") + 1;
-    
-    var gridster = $("#gridster" + active).gridster().data('gridster');
-    next = gridster.serialize().length;
-    
-    gridster.add_widget('<li class="new externalGraph"><div class="widgetTitle">a</div><div id="graph_' + active + '_' + next + '" class="innerGraph"></div></li>', 1, 1, (next%widthWidgets) + 1, ~~(next/widthWidgets) + 1);
-    
-    drawGraph(active, next);
-    
-    $('#addPanel').panel("close");
-    
-  });
   
   $('#addTabButton').on('click', function(){
     var num_tabs = $("#tabList li").length + 1;
@@ -49,7 +34,7 @@ $(document).ready(function(){
   
     $.ajax({
       type:'GET',
-      url:'http://localhost:8000/json_files',
+      url:'json_files',
       datatype:'html',
       success:function(resp){
       
@@ -78,129 +63,187 @@ $(document).ready(function(){
       }
     });
   });
+
+  function addDirectoryClickEvent(directory){
+  
+	  $('#' + directory).on('click', function(){
+	  
+	    $('#addPanel').panel('close');
+	  
+	    $.ajax({
+	      type: 'GET',
+	      url: 'json_files/' + directory,
+	      datatype: 'html',
+	      success: function(resp){
+	        
+	        files = [];
+	        
+	        lis = resp.split('<ul>\n')[1].split('\n</ul>')[0].split('\n');
+	        
+	        panelListDirectory = "";
+	      
+	        $.each(lis,function(index,item){
+	          file = item.split('href=\"')[1].split('\">')[0];
+	          files[files.length] = file.split('\.json')[0];
+	          panelListDirectory += '<li><a href="#" id="' + file.split('\.json')[0] + '">' + file.split('\.json')[0] + '</a></li>';
+	        });
+	        
+	        $('#panelListDirectory').html(panelListDirectory);
+	        $('#panelListDirectory').listview("refresh");
+	        
+	        for(i=0;i<files.length;i++){
+	          addFileClickEvent(files[i], directory);
+	        }
+	        
+	        $('#addPanelDirectory').panel('open');
+	      }
+	    });
+	  });
+	}
+
+	function addFileClickEvent(file, directory){
+
+	  $('#' + file).on('click', function(){
+	    
+	    $('#addPanelDirectory').panel('close');
+
+	    $.ajax({
+	    	type: 'GET',
+	    	url: 'json_files/' + directory + '/' + file + '.json',
+	    	datatype: 'json',
+	    	success:function(resp){
+
+	    		notValidOptions = ['id', 'week', 'date','unixtime'];
+	    		options = [];
+
+	    		panelListOptions = "";
+
+	    		$.each(resp, function(key, value){
+	    			if($.inArray(key, notValidOptions) == -1){
+	    				options[options.length] = key;
+	    				panelListOptions += '<li><a href="#" id="' + file + '_' +  key + '">' + key + '</a></li>';
+					}    				
+	    		});
+
+	    		$('#panelListCommit').html(panelListOptions);
+		        $('#panelListCommit').listview("refresh");
+		        
+		        for(i=0;i<options.length;i++){
+		          addOptionClickEvent(resp, options[i], file);
+		        }
+		        
+		        $('#addPanelCommit').panel('open');
+	    	}
+	    });
+	  });
+	}
+
+	function addOptionClickEvent(resp, option, file){
+		//alert(resp[option]);
+
+		$('#' + file + '_' + option).on('click', function(){
+
+		    active = $('#tabs').tabs("option","active") + 1;
+		    
+		    gridster = $("#gridster" + active).gridster().data('gridster');
+		    next = gridster.serialize().length;
+
+		    gridster.add_widget('<li class="new externalGraph"><div class="widgetTitle">' + file + '-' + option + '</div><div id="graph_' + active + '_' + next + '" class="innerGraph"></div></li>', 1, 1, (next%widthWidgets) + 1, ~~(next/widthWidgets) + 1);
+
+		    drawGraph(active, next, resp, option);
+	    
+	    	$('#addPanelCommit').panel("close");
+
+		});
+	}
+
+	function drawGraph(activeTab, graphIndex, resp, option){
+
+		date = resp.date;
+		data = resp[option];
+
+		toDraw = [];
+
+	    for(i = 0; i< data.length;i++){
+		    toDraw[i] = [i,data[i]];
+	    }
+		
+		options = {
+	        HtmlText : false,
+	        mouse:{
+	          track: true,
+	          relative: true,
+	          position: 'nw',
+	          trackFormatter: function(obj){return 'x = ' + date[parseInt(obj.x)] + ', y = ' + obj.y;},
+	          sensibility : 200
+	        }
+      	};
+
+      	container = document.getElementById('graph_' + activeTab + '_' + graphIndex);
+	      
+      	Flotr.draw(container,[toDraw],options);
+
+	}
+
+	/*function drawGraphInContainer(container,index,moreOptions){
+
+	  json_file = "json_files/json_file" + index + ".json";
+
+	  $.get(json_file,
+	    function(data){
+	    
+	      date = data.date;
+	      data = data.commits;
+	      
+	      toDraw = [];
+	      
+	      options = Flotr._.extend(Flotr._.clone(options), moreOptions);
+	      
+	    }
+	  );
+	}
+
+	function drawGraph(active, index){
+
+	  $('#graph_' + active + '_' + index).on('click',function(){
+	    $( "#popupBasic" ).popup( "open" );
+	    drawGraphInContainer('popupContainer',index,{selection : {
+	      mode: 'x',
+	      fps: 30
+	    }});
+	    
+	    Flotr.EventAdapter.observe(document.getElementById('popupContainer'), 'flotr:select', function(area) {
+
+	      // Draw graph with new area
+	      graph = drawGraphInContainer('popupContainer',index,{
+	        selection:{
+	          mode: 'x',
+	          fps:30
+	        },
+	        xaxis: {
+	            min: area.x1,
+	            max: area.x2
+	        },
+	        yaxis: {
+	            min: area.y1,
+	            max: area.y2
+	        }
+	      });
+	    });
+
+	    // When graph is clicked, draw the graph with default area.
+	    Flotr.EventAdapter.observe(document.getElementById('popupContainer'), 'flotr:click', function() {
+	        drawGraphInContainer('popupContainer',index,{selection : {
+	        mode: 'x',
+	        fps: 30
+	      }});
+	    });
+	  
+	  });
+	  
+	  drawGraphInContainer('graph_' + active + '_' + index, index,{})
+	}*/
   
 });
 
-function addDirectoryClickEvent(directory){
-  
-  $('#' + directory).on('click', function(){
-  
-    $('#addPanel').panel('close');
-  
-    $.ajax({
-      type: 'GET',
-      url: 'http://localhost:8000/json_files/' + directory,
-      datatype: 'html',
-      success: function(resp){
-        
-        files = [];
-        
-        lis = resp.split('<ul>\n')[1].split('\n</ul>')[0].split('\n');
-        
-        panelListDirectory = ""
-      
-        $.each(lis,function(index,item){
-          file = item.split('href=\"')[1].split('\">')[0];
-          files[files.length] = file.split('/')[0];
-          panelListDirectory += '<li><a href="#" id="' + file.split('/')[0] + '">' + file.split('/')[0] + '</a></li>';
-        });
-        
-        $('#panelListDirectory').html(panelListDirectory);
-        $('#panelListDirectory').listview("refresh");
-        
-        for(i=0;i<files.length;i++){
-          addFileClickEvent(files[i], directory);
-        }
-        
-        $('#addPanelDirectory').panel('open');
-      }
-    });
-  });
-}
 
-function addFileClickEvent(file, directory){
-
-  //alert(file);
-
-  $('#' + file).on('click', function(){
-    alert(file);
-  });
-}
-
-function drawGraphInContainer(container,index,moreOptions){
-
-  json_file = "json_files/json_file" + index + ".json";
-
-  $.get(json_file,
-    function(data){
-    
-      date = data.date;
-      data = data.commits;
-      
-      toDraw = [];
-
-      for(i = 0; i< data.length;i++){
-	      toDraw[i] = [i,data[i]];
-      }
-      
-      options = {
-        title:json_file,
-        HtmlText : false,
-        mouse:{
-          track: true,
-          relative: true,
-          position: 'nw',
-          trackFormatter: function(obj){return 'x = ' + date[parseInt(obj.x)] + ', y = ' + obj.y;},
-          sensibility : 200
-        }
-      };
-      
-      options = Flotr._.extend(Flotr._.clone(options), moreOptions);
-      
-      container = document.getElementById(container);
-      
-      Flotr.draw(container,[toDraw],options); 
-    }
-  );
-}
-
-function drawGraph(active, index){
-
-  $('#graph_' + active + '_' + index).on('click',function(){
-    $( "#popupBasic" ).popup( "open" );
-    drawGraphInContainer('popupContainer',index,{selection : {
-      mode: 'x',
-      fps: 30
-    }});
-    
-    Flotr.EventAdapter.observe(document.getElementById('popupContainer'), 'flotr:select', function(area) {
-
-      // Draw graph with new area
-      graph = drawGraphInContainer('popupContainer',index,{
-        selection:{
-          mode: 'x',
-          fps:30
-        },
-        xaxis: {
-            min: area.x1,
-            max: area.x2
-        },
-        yaxis: {
-            min: area.y1,
-            max: area.y2
-        }
-      });
-    });
-
-    // When graph is clicked, draw the graph with default area.
-    Flotr.EventAdapter.observe(document.getElementById('popupContainer'), 'flotr:click', function() {
-        drawGraphInContainer('popupContainer',index,{selection : {
-        mode: 'x',
-        fps: 30
-      }});
-    });
-  
-  });
-  
-  drawGraphInContainer('graph_' + active + '_' + index, index,{})
-}
