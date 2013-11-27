@@ -1,0 +1,5 @@
+{
+	"its":{["Atomia-its-evolutionary", "VA_Linux-its-evolutionary", "VMware-its-evolutionary"]},
+	"mls":{["Big_Switch_Networks-mls-evolutionary", "VMware-mls-evolutionary"]},
+	"scm":{["Atomia-scm-evolutionary","VA_Linux-scm-evolutionary","VMware-scm-evolutionary"]}
+}

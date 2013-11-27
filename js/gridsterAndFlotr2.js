@@ -1,36 +1,75 @@
+fileStructure = {};
+
+function getFileStructure(){
+	$.ajax({
+		type: 'GET',
+		url: 'json_files/jsonFilesStructure.json',
+		datatype: 'json',
+		success: function(resp){
+			alert('hola');
+			//fileStructure = resp;
+		}
+	});
+
+}
+
+function initElements(){
+
+	$( "#popupBasic" ).popup();
+  
+	$('#tabs').tabs();
+
+	width = $('#gridster1').width();
+
+	if(width > 1000)
+	widthWidgets = 3;
+	else if (width > 666) 
+	widthWidgets = 2;
+	else
+	widthWidgets = 1;
+
+	$("#gridster1").gridster({
+		widget_margins: [10, 10],
+		widget_base_dimensions: [(width-widthWidgets*10)/widthWidgets, (width-widthWidgets*10)/(2*widthWidgets)],
+		draggable: {
+		  handle: '.widgetTitle'
+		}
+	});
+
+	getFileStructure();
+}
+
+function showPanelUpdated(jsonDirectory){
+	alert(JSON.stringify(jsonDirectory));
+}
+
 $(document).ready(function(){
 
-  $( "#popupBasic" ).popup();
-  
-  $('#tabs').tabs();
+	initElements();
 
-  width = $('#tab1').width();
-  
-  if(width > 1000)
-    widthWidgets = 3;
-  else if (width > 666) 
-    widthWidgets = 2;
-  else
-    widthWidgets = 1;
- 
-  $("#gridster1").gridster({
-    widget_margins: [10, 10],
-    widget_base_dimensions: [(width-widthWidgets*10)/widthWidgets, (width-widthWidgets*10)/(2*widthWidgets)],
-    draggable: {
-      handle: '.widgetTitle'
-    }
+  $('#tabLink1').on('blur', function(){
+  	if($('#tabLink1').html() == '')
+  		$('#tabLink1').html('#1');
+  });
+
+  $('#addChartButton').on('click', function(){
+  	showPanelUpdated(fileStructure);
   });
   
   $('#addTabButton').on('click', function(){
     var num_tabs = $("#tabList li").length + 1;
-    $("#tabList").append("<li><a href='#tab" + num_tabs + "' contenteditable='true' spellcheck='false'>#" + num_tabs + "</a></li>");
+    $("#tabList").append("<li><a href='#tab" + num_tabs + "' id='tabLink" + num_tabs+ "' contenteditable='true' spellcheck='false' title='Click to edit tab title'>#" + num_tabs + "</a></li>");
     
     $("#tabs").append("<div id='tab"+num_tabs+"'><div class='gridster'><ul id='gridster" + num_tabs + "'></ul></div></div>");
     $("#tabs").tabs("refresh");
 
+    $('#tabLink' + num_tabs).on('blur', function(){
+    	if($('#tabLink' + num_tabs).html() == '')
+			$('#tabLink' + num_tabs).html('#' + num_tabs);
+	});
   });
   
-  $('#addChartButton').on('click',function(){
+  /*$('#addChartButton').on('click',function(){
   
     $.ajax({
       type:'GET',
@@ -62,7 +101,7 @@ $(document).ready(function(){
         $('#addPanel').panel('open');
       }
     });
-  });
+  });*/
 
   function addDirectoryClickEvent(directory){
   
