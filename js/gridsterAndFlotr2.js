@@ -1,4 +1,5 @@
-fileStructure = {};
+var fileStructure = {};
+var widthWidgets = 0;
 
 function getFileStructure(){
 	$.ajax({
@@ -6,8 +7,7 @@ function getFileStructure(){
 		url: 'json_files/jsonFilesStructure.json',
 		datatype: 'json',
 		success: function(resp){
-			alert('hola');
-			//fileStructure = resp;
+			fileStructure = resp;
 		}
 	});
 
@@ -39,35 +39,173 @@ function initElements(){
 	getFileStructure();
 }
 
-function showPanelUpdated(jsonDirectory){
-	alert(JSON.stringify(jsonDirectory));
+function showDirectoryPanelUpdated(jsonDirectory, path){
+
+	var directoryList = "";
+	var directoryKeys = [];
+	var directoryValues = [];
+
+	$.each(jsonDirectory.directories, function(key, value){
+		directoryList += '<li><a href="#" id="' + key + '">' + key + '</a></li>';
+		directoryKeys[directoryKeys.length] = key;
+		directoryValues[directoryValues.length] = value;
+	});
+
+	$('#panelDirectoryList').html(directoryList);
+    $('#panelDirectoryList').listview("refresh");
+
+
+    for(i=0; i<directoryKeys.length; i++){
+    	directoryClickEvent(directoryKeys[i], directoryValues[i], path + "/" + directoryKeys[i])
+    }
+
+    var fileList = "";
+	var fileValues = [];
+
+	$.each(jsonDirectory.files, function(key, value){
+		fileList += '<li><a href="#" id="' + value + '">' + value + '</a></li>';
+		fileValues[fileValues.length] = value;
+	});
+
+	$('#panelFileList').html(fileList);
+    $('#panelFileList').listview("refresh");
+
+    for(i=0; i<fileValues.length; i++){
+    	fileClickEvent(fileValues[i], path + "/" + fileValues[i] + ".json")
+    }
+
+	$('#addPanel').panel('open');
+}
+
+function directoryClickEvent(key, value, path){
+	$('#' + key).on('click', function(){
+		$('#addPanel').panel('close');
+		showDirectoryPanelUpdated(value, path);
+	});
+}
+
+function fileClickEvent(value, jsonFilePath){
+	$('#' + value).on('click', function(){
+		$('#addPanel').panel('close');
+		showFilePanelUpdated(value, jsonFilePath);
+	});
+}
+
+function showFilePanelUpdated(jsonFile, path){
+	
+	$.ajax({
+		type: 'GET',
+		url: path, 
+		datatype: 'json',
+		success: function(resp){
+
+			notValidOptions = ['id', 'week', 'date','unixtime'];
+    		options = [];
+
+    		panelListOptions = "";
+
+    		$.each(resp, function(key, value){
+    			if($.inArray(key, notValidOptions) == -1){
+    				options[options.length] = key;
+    				panelListOptions += '<li><a href="#" id="' + jsonFile + '_' +  key + '">' + key + '</a></li>';
+				}    				
+    		});
+
+    		$('#panelListCommit').html(panelListOptions);
+	        $('#panelListCommit').listview("refresh");
+	        
+	        for(i=0;i<options.length;i++){
+	          addOptionClickEvent(resp, options[i], jsonFile);
+	        }
+	        
+	        $('#addPanelCommit').panel('open');
+		}
+	});
+
+}
+
+function addOptionClickEvent(resp, option, file){
+	//alert(resp[option]);
+
+	$('#' + file + '_' + option).on('click', function(){
+
+	    active = $('#tabs').tabs("option","active") + 1;
+	    
+	    gridster = $("#gridster" + active).gridster().data('gridster');
+	    next = gridster.serialize().length;
+
+	    gridster.add_widget('<li class="new externalGraph"><div class="widgetTitle">' + file + '-' + option + '</div><div id="graph_' + active + '_' + next + '" class="innerGraph"></div></li>', 1, 1, (next%widthWidgets) + 1, ~~(next/widthWidgets) + 1);
+
+	    drawGraph(active, next, resp, option);
+    
+    	$('#addPanelCommit').panel("close");
+
+	});
+}
+
+function drawGraph(activeTab, graphIndex, resp, option){
+
+	date = resp.date;
+	data = resp[option];
+
+	toDraw = [];
+
+    for(i = 0; i< data.length;i++){
+	    toDraw[i] = [i,data[i]];
+    }
+	
+	options = {
+        HtmlText : false,
+        xaxis : {
+        	tickFormatter: function(x){
+        		x = parseInt(x);
+        		return date[x];
+        	}
+        },
+        yaxis : {
+        	max : Math.max.apply(Math, data) + 1
+        },
+        mouse:{
+          track: true,
+          relative: true,
+          position: 'nw',
+          trackFormatter: function(obj){return 'x = ' + date[parseInt(obj.x)] + ', y = ' + obj.y;},
+          sensibility : 200
+        }
+  	};
+
+  	container = document.getElementById('graph_' + activeTab + '_' + graphIndex);
+      
+  	Flotr.draw(container,[toDraw],options);
+
 }
 
 $(document).ready(function(){
 
 	initElements();
 
-  $('#tabLink1').on('blur', function(){
-  	if($('#tabLink1').html() == '')
-  		$('#tabLink1').html('#1');
-  });
-
-  $('#addChartButton').on('click', function(){
-  	showPanelUpdated(fileStructure);
-  });
-  
-  $('#addTabButton').on('click', function(){
-    var num_tabs = $("#tabList li").length + 1;
-    $("#tabList").append("<li><a href='#tab" + num_tabs + "' id='tabLink" + num_tabs+ "' contenteditable='true' spellcheck='false' title='Click to edit tab title'>#" + num_tabs + "</a></li>");
-    
-    $("#tabs").append("<div id='tab"+num_tabs+"'><div class='gridster'><ul id='gridster" + num_tabs + "'></ul></div></div>");
-    $("#tabs").tabs("refresh");
-
-    $('#tabLink' + num_tabs).on('blur', function(){
-    	if($('#tabLink' + num_tabs).html() == '')
-			$('#tabLink' + num_tabs).html('#' + num_tabs);
+	$('#tabLink1').on('blur', function(){
+		if($('#tabLink1').html() == '')
+			$('#tabLink1').html('#1');
 	});
-  });
+
+	$('#addChartButton').on('click', function(){
+		showDirectoryPanelUpdated(fileStructure,'json_files');
+	});
+
+	$('#addTabButton').on('click', function(){
+		var num_tabs = $("#tabList li").length + 1;
+		$("#tabList").append("<li><a href='#tab" + num_tabs + "' id='tabLink" + num_tabs+ "' contenteditable='true' spellcheck='false' title='Click to edit tab title'>#" + num_tabs + "</a></li>");
+
+		$("#tabs").append("<div id='tab"+num_tabs+"'><div class='gridster'><ul id='gridster" + num_tabs + "'></ul></div></div>");
+		$("#tabs").tabs("refresh");
+
+		$('#tabLink' + num_tabs).on('blur', function(){
+			if($('#tabLink' + num_tabs).html() == '')
+				$('#tabLink' + num_tabs).html('#' + num_tabs);
+		});
+
+	});
   
   /*$('#addChartButton').on('click',function(){
   
@@ -103,135 +241,79 @@ $(document).ready(function(){
     });
   });*/
 
-  function addDirectoryClickEvent(directory){
+ //  function addDirectoryClickEvent(directory){
   
-	  $('#' + directory).on('click', function(){
+	//   $('#' + directory).on('click', function(){
 	  
-	    $('#addPanel').panel('close');
+	//     $('#addPanel').panel('close');
 	  
-	    $.ajax({
-	      type: 'GET',
-	      url: 'json_files/' + directory,
-	      datatype: 'html',
-	      success: function(resp){
+	//     $.ajax({
+	//       type: 'GET',
+	//       url: 'json_files/' + directory,
+	//       datatype: 'html',
+	//       success: function(resp){
 	        
-	        files = [];
+	//         files = [];
 	        
-	        lis = resp.split('<ul>\n')[1].split('\n</ul>')[0].split('\n');
+	//         lis = resp.split('<ul>\n')[1].split('\n</ul>')[0].split('\n');
 	        
-	        panelListDirectory = "";
+	//         panelListDirectory = "";
 	      
-	        $.each(lis,function(index,item){
-	          file = item.split('href=\"')[1].split('\">')[0];
-	          files[files.length] = file.split('\.json')[0];
-	          panelListDirectory += '<li><a href="#" id="' + file.split('\.json')[0] + '">' + file.split('\.json')[0] + '</a></li>';
-	        });
+	//         $.each(lis,function(index,item){
+	//           file = item.split('href=\"')[1].split('\">')[0];
+	//           files[files.length] = file.split('\.json')[0];
+	//           panelListDirectory += '<li><a href="#" id="' + file.split('\.json')[0] + '">' + file.split('\.json')[0] + '</a></li>';
+	//         });
 	        
-	        $('#panelListDirectory').html(panelListDirectory);
-	        $('#panelListDirectory').listview("refresh");
+	//         $('#panelListDirectory').html(panelListDirectory);
+	//         $('#panelListDirectory').listview("refresh");
 	        
-	        for(i=0;i<files.length;i++){
-	          addFileClickEvent(files[i], directory);
-	        }
+	//         for(i=0;i<files.length;i++){
+	//           addFileClickEvent(files[i], directory);
+	//         }
 	        
-	        $('#addPanelDirectory').panel('open');
-	      }
-	    });
-	  });
-	}
+	//         $('#addPanelDirectory').panel('open');
+	//       }
+	//     });
+	//   });
+	// }
 
-	function addFileClickEvent(file, directory){
+	// function addFileClickEvent(file, directory){
 
-	  $('#' + file).on('click', function(){
+	//   $('#' + file).on('click', function(){
 	    
-	    $('#addPanelDirectory').panel('close');
+	//     $('#addPanelDirectory').panel('close');
 
-	    $.ajax({
-	    	type: 'GET',
-	    	url: 'json_files/' + directory + '/' + file + '.json',
-	    	datatype: 'json',
-	    	success:function(resp){
+	//     $.ajax({
+	//     	type: 'GET',
+	//     	url: 'json_files/' + directory + '/' + file + '.json',
+	//     	datatype: 'json',
+	//     	success:function(resp){
 
-	    		notValidOptions = ['id', 'week', 'date','unixtime'];
-	    		options = [];
+	//     		notValidOptions = ['id', 'week', 'date','unixtime'];
+	//     		options = [];
 
-	    		panelListOptions = "";
+	//     		panelListOptions = "";
 
-	    		$.each(resp, function(key, value){
-	    			if($.inArray(key, notValidOptions) == -1){
-	    				options[options.length] = key;
-	    				panelListOptions += '<li><a href="#" id="' + file + '_' +  key + '">' + key + '</a></li>';
-					}    				
-	    		});
+	//     		$.each(resp, function(key, value){
+	//     			if($.inArray(key, notValidOptions) == -1){
+	//     				options[options.length] = key;
+	//     				panelListOptions += '<li><a href="#" id="' + file + '_' +  key + '">' + key + '</a></li>';
+	// 				}    				
+	//     		});
 
-	    		$('#panelListCommit').html(panelListOptions);
-		        $('#panelListCommit').listview("refresh");
+	//     		$('#panelListCommit').html(panelListOptions);
+	// 	        $('#panelListCommit').listview("refresh");
 		        
-		        for(i=0;i<options.length;i++){
-		          addOptionClickEvent(resp, options[i], file);
-		        }
+	// 	        for(i=0;i<options.length;i++){
+	// 	          addOptionClickEvent(resp, options[i], file);
+	// 	        }
 		        
-		        $('#addPanelCommit').panel('open');
-	    	}
-	    });
-	  });
-	}
-
-	function addOptionClickEvent(resp, option, file){
-		//alert(resp[option]);
-
-		$('#' + file + '_' + option).on('click', function(){
-
-		    active = $('#tabs').tabs("option","active") + 1;
-		    
-		    gridster = $("#gridster" + active).gridster().data('gridster');
-		    next = gridster.serialize().length;
-
-		    gridster.add_widget('<li class="new externalGraph"><div class="widgetTitle">' + file + '-' + option + '</div><div id="graph_' + active + '_' + next + '" class="innerGraph"></div></li>', 1, 1, (next%widthWidgets) + 1, ~~(next/widthWidgets) + 1);
-
-		    drawGraph(active, next, resp, option);
-	    
-	    	$('#addPanelCommit').panel("close");
-
-		});
-	}
-
-	function drawGraph(activeTab, graphIndex, resp, option){
-
-		date = resp.date;
-		data = resp[option];
-
-		toDraw = [];
-
-	    for(i = 0; i< data.length;i++){
-		    toDraw[i] = [i,data[i]];
-	    }
-		
-		options = {
-	        HtmlText : false,
-	        xaxis : {
-	        	tickFormatter: function(x){
-	        		x = parseInt(x);
-	        		return date[x];
-	        	}
-	        },
-	        yaxis : {
-	        	max : Math.max.apply(Math, data) + 1
-	        },
-	        mouse:{
-	          track: true,
-	          relative: true,
-	          position: 'nw',
-	          trackFormatter: function(obj){return 'x = ' + date[parseInt(obj.x)] + ', y = ' + obj.y;},
-	          sensibility : 200
-	        }
-      	};
-
-      	container = document.getElementById('graph_' + activeTab + '_' + graphIndex);
-	      
-      	Flotr.draw(container,[toDraw],options);
-
-	}
+	// 	        $('#addPanelCommit').panel('open');
+	//     	}
+	//     });
+	//   });
+	// }
 
 	/*function drawGraphInContainer(container,index,moreOptions){
 
