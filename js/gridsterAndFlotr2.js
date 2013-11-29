@@ -33,6 +33,16 @@ function initElements(){
 		widget_base_dimensions: [(width-widthWidgets*10)/widthWidgets, (width-widthWidgets*10)/(2*widthWidgets)],
 		draggable: {
 		  handle: '.widgetTitle'
+		},
+		serialize_params: function($w, wgd){ 
+		    return { 
+	           id: $($w).attr('id'), 
+	           col: wgd.col, 
+	           row: wgd.row, 
+	           size_x: wgd.size_x, 
+	           size_y: wgd.size_y, 
+	           htmlContent : $($w).html() 
+		    };
 		}
 	});
 
@@ -134,7 +144,8 @@ function addOptionClickEvent(resp, option, file){
 	    gridster = $("#gridster" + active).gridster().data('gridster');
 	    next = gridster.serialize().length;
 
-	    gridster.add_widget('<li class="new externalGraph"><div class="widgetTitle">' + file + '-' + option + '</div><div id="graph_' + active + '_' + next + '" class="innerGraph"></div></li>', 1, 1, (next%widthWidgets) + 1, ~~(next/widthWidgets) + 1);
+	    gridster.add_widget('<li class="new externalGraph"><div class="widgetTitle">' + file + '-' + option + '</div><div id="graph_' + active 
+	    	+ '_' + next + '" class="innerGraph"></div></li>', 1, 1, (next%widthWidgets) + 1, ~~(next/widthWidgets) + 1);
 
 	    drawGraph(active, next, resp, option);
     
@@ -195,7 +206,8 @@ $(document).ready(function(){
 
 	$('#addTabButton').on('click', function(){
 		var num_tabs = $("#tabList li").length + 1;
-		$("#tabList").append("<li><a href='#tab" + num_tabs + "' id='tabLink" + num_tabs+ "' contenteditable='true' spellcheck='false' title='Click to edit tab title'>#" + num_tabs + "</a></li>");
+		$("#tabList").append("<li><a href='#tab" + num_tabs + "' id='tabLink" + num_tabs + 
+			"' contenteditable='true' spellcheck='false' title='Click to edit tab title'>#" + num_tabs + "</a></li>");
 
 		$("#tabs").append("<div id='tab"+num_tabs+"'><div class='gridster'><ul id='gridster" + num_tabs + "'></ul></div></div>");
 		$("#tabs").tabs("refresh");
@@ -204,8 +216,17 @@ $(document).ready(function(){
 			if($('#tabLink' + num_tabs).html() == '')
 				$('#tabLink' + num_tabs).html('#' + num_tabs);
 		});
-
 	});
+
+	$('#shareButton').on('click', function(){
+		var num_tabs = $("#tabList li").length;
+		for(i = 1; i<=num_tabs;i++){
+			gridster = $("#gridster" + i).gridster().data('gridster');
+			serializedGridster = gridster.serialize();
+			alert(JSON.stringify(serializedGridster));
+		}
+	});
+});
   
   /*$('#addChartButton').on('click',function(){
   
@@ -374,6 +395,6 @@ $(document).ready(function(){
 	  drawGraphInContainer('graph_' + active + '_' + index, index,{})
 	}*/
   
-});
+
 
 
