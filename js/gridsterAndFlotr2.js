@@ -4,7 +4,7 @@ var widthWidgets = 0;
 function getFileStructure(){
 	$.ajax({
 		type: 'GET',
-		url: 'json_files/jsonFilesStructure.json',
+		url: 'jsonFiles/jsonFilesStructure.json',
 		datatype: 'json',
 		success: function(resp){
 			fileStructure = resp;
@@ -16,6 +16,8 @@ function getFileStructure(){
 function initElements(){
 
 	$( "#popupBasic" ).popup();
+
+	$( "#sharePopup" ).popup();
   
 	$('#tabs').tabs();
 
@@ -191,6 +193,29 @@ function drawGraph(activeTab, graphIndex, resp, option){
 
 }
 
+function get(name){
+   if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
+      return decodeURIComponent(name[1]);
+}
+
+function visualizeSharedDashboard(hashParam){
+
+	$.ajax({
+		url: 'phpServerSide/GetTabsFromHash.php',
+		data:{
+			hash: hashParam
+		},
+		type: 'GET',
+		datatype: 'json',
+		success: function(resp){
+			jsonObject = JSON.stringify(eval('(' + resp + ')'));
+			alert(JSON.parse(resp)[0]["content"][0]["htmlContent"]);
+		}
+	});
+
+
+}
+
 $(document).ready(function(){
 
 	initElements();
@@ -201,7 +226,7 @@ $(document).ready(function(){
 	});
 
 	$('#addChartButton').on('click', function(){
-		showDirectoryPanelUpdated(fileStructure,'json_files');
+		showDirectoryPanelUpdated(fileStructure,'jsonFiles');
 	});
 
 	$('#addTabButton').on('click', function(){
@@ -220,12 +245,34 @@ $(document).ready(function(){
 
 	$('#shareButton').on('click', function(){
 		var num_tabs = $("#tabList li").length;
+		var jsons = {};
 		for(i = 1; i<=num_tabs;i++){
+			jsonTab = {};
+			jsonTab["name"] = $('#tabLink' + i).html();
+			jsonTab["content"] = "";
+
 			gridster = $("#gridster" + i).gridster().data('gridster');
-			serializedGridster = gridster.serialize();
-			alert(JSON.stringify(serializedGridster));
+			jsonTab["content"] =  gridster.serialize();
+			jsons[i-1] = jsonTab;
 		}
+
+		$.ajax({
+			url : 'phpServerSide/GetHashFromTabs.php',
+			type : 'POST',
+			data : jsons,
+			datatype : 'json',
+			success : function(resp){
+				$('#sharePopupText').html(location.protocol + '//' + location.host + location.pathname + "?hash=" + resp);
+				$('#sharePopup').popup("open");
+			}
+		})
 	});
+
+	hashParam = get('hash');
+
+	if(hashParam != undefined){
+		visualizeSharedDashboard(hashParam);
+	}
 });
   
   /*$('#addChartButton').on('click',function(){
