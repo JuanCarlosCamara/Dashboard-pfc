@@ -1,5 +1,6 @@
 var fileStructure = {};
 var widthWidgets = 0;
+var graphInfo = {};
 
 function getFileStructure(){
 	$.ajax({
@@ -37,6 +38,7 @@ function initElements(){
 		  handle: '.widgetTitle'
 		},
 		serialize_params: function($w, wgd){ 
+
 		    return { 
 	           id: $($w).attr('id'), 
 	           col: wgd.col, 
@@ -149,6 +151,14 @@ function addOptionClickEvent(resp, option, file){
 	    gridster.add_widget('<li class="new externalGraph"><div class="widgetTitle">' + file + '-' + option + '</div><div id="graph_' + active 
 	    	+ '_' + next + '" class="innerGraph"></div></li>', 1, 1, (next%widthWidgets) + 1, ~~(next/widthWidgets) + 1);
 
+	    graphJson = {};
+	    graphJson.id = "graph_" + active + "_" + next;
+	    graphJson.x = resp.date;
+	    graphJson.y = resp[option];
+	    graphJson.title = file + '-' + option;
+
+	    graphInfo["graph_" + active + "_" + next] = graphJson;
+
 	    drawGraph(active, next, resp, option);
     
     	$('#addPanelCommit').panel("close");
@@ -193,6 +203,40 @@ function drawGraph(activeTab, graphIndex, resp, option){
 
 }
 
+function drawGraphFromJson(id, date, data){
+
+	toDraw = [];
+
+    for(i = 0; i< data.length;i++){
+	    toDraw[i] = [i,parseInt(data[i])];
+    }
+	
+	options = {
+        HtmlText : false,
+        xaxis : {
+        	tickFormatter: function(x){
+        		x = parseInt(x);
+        		return date[x];
+        	}
+        },
+        yaxis : {
+        	max : Math.max.apply(Math, data) + 1
+        },
+        mouse:{
+          track: true,
+          relative: true,
+          position: 'nw',
+          trackFormatter: function(obj){return 'x = ' + date[parseInt(obj.x)] + ', y = ' + obj.y;},
+          sensibility : 200
+        }
+  	};
+ 
+  	container = document.getElementById(id);
+
+  	Flotr.draw(container,[toDraw],options);
+
+}
+
 function get(name){
    if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
       return decodeURIComponent(name[1]);
@@ -208,8 +252,48 @@ function visualizeSharedDashboard(hashParam){
 		type: 'GET',
 		datatype: 'json',
 		success: function(resp){
-			jsonObject = JSON.stringify(eval('(' + resp + ')'));
-			alert(JSON.parse(resp)[0]["content"][0]["htmlContent"]);
+			tabs = JSON.parse(resp).tabInfo;
+			widgets = JSON.parse(resp).graphInfo;
+			$.each(tabs, function(i,item){
+
+				if(i != 0){
+					$("#tabList").append("<li><a href='#tab" + (i + 1) + "' id='tabLink" + (i + 1) + 
+						"' contenteditable='true' spellcheck='false' title='Click to edit tab title'>" + item.name + "</a></li>");
+
+					$("#tabs").append("<div id='tab"+ (i + 1) +"'><div class='gridster'><ul id='gridster" + (i + 1) + "'></ul></div></div>");
+					$("#tabs").tabs("refresh");
+
+					$('#tabLink' + (i + 1)).on('blur', function(){
+						if($('#tabLink' + (i + 1)).html() == '')
+							$('#tabLink' + (i + 1)).html('#' + (i + 1));
+					});
+				}
+
+				$('#tabLink' + (i+1)).click();
+
+				if(item.widgets != undefined){
+					$.each(item.widgets, function(j, item2){
+						gridster = $("#gridster" + (i + 1)).gridster().data('gridster');
+
+						next = gridster.serialize().length;
+						widget = widgets[item2.id];
+
+						gridster.add_widget('<li class="new externalGraph"><div class="widgetTitle">' + widget.title + '</div><div id="' + widget.id 
+					    	+ '" class="innerGraph"></div></li>', 1, 1, (next%widthWidgets) + 1, ~~(next/widthWidgets) + 1);
+
+					    graphJson = {};
+					    graphJson.id = widget.id;
+					    graphJson.x = widget.x;
+					    graphJson.y = widget.y;
+					    graphJson.title = widget.title;
+
+					    graphInfo[widget.id] = graphJson;
+
+					    drawGraphFromJson(widget.id, widget.x, widget.y);
+					});
+				}
+
+			});
 		}
 	});
 
@@ -249,23 +333,34 @@ $(document).ready(function(){
 		for(i = 1; i<=num_tabs;i++){
 			jsonTab = {};
 			jsonTab["name"] = $('#tabLink' + i).html();
-			jsonTab["content"] = "";
+			jsonTab["widgets"] = [];
 
 			gridster = $("#gridster" + i).gridster().data('gridster');
-			jsonTab["content"] =  gridster.serialize();
+			widgets =  gridster.serialize();
+
+			for(j = 0; j < widgets.length; j++){
+				widgetJson = {};
+				widgetJson.id = $(widgets[j]["htmlContent"])[1].id;
+				widgetJson.pos = j;
+				jsonTab["widgets"][jsonTab["widgets"].length] = widgetJson;
+			}
+			
 			jsons[i-1] = jsonTab;
 		}
 
 		$.ajax({
 			url : 'phpServerSide/GetHashFromTabs.php',
 			type : 'POST',
-			data : jsons,
+			data : {
+				graphInfo : graphInfo,
+				tabInfo : jsons
+			},
 			datatype : 'json',
 			success : function(resp){
 				$('#sharePopupText').html(location.protocol + '//' + location.host + location.pathname + "?hash=" + resp);
 				$('#sharePopup').popup("open");
 			}
-		})
+		});
 	});
 
 	hashParam = get('hash');
