@@ -129,7 +129,7 @@ function showFilePanelUpdated(jsonFile, path){
 	        $('#panelListCommit').listview("refresh");
 	        
 	        for(i=0;i<options.length;i++){
-	          addOptionClickEvent(resp, options[i], jsonFile);
+	          addOptionClickEvent(resp, options[i], jsonFile, path);
 	        }
 	        
 	        $('#addPanelCommit').panel('open');
@@ -138,35 +138,63 @@ function showFilePanelUpdated(jsonFile, path){
 
 }
 
-function addOptionClickEvent(resp, option, file){
+function addWidgetToGridster(id, file, option, title, activeTab, resp){
+	
+	gridster = $("#gridster" + activeTab).gridster().data('gridster');
+    next = gridster.serialize().length;
+
+    if(id=="")
+    	id = 'graph_' + activeTab + '_' + next;
+
+    gridster.add_widget('<li class="new externalGraph"><div class="widgetTitle">' + title + '</div><div id="' + id + 
+    	'" class="innerGraph"></div></li>', 1, 1, (next%widthWidgets) + 1, ~~(next/widthWidgets) + 1);
+
+    graphJson = {};
+    graphJson.id = id;
+    graphJson.file = file;
+    graphJson.option = option;
+    graphJson.title = title;
+
+    graphInfo[id] = graphJson;
+
+    drawGraph(id, resp, option);
+}
+
+function addOptionClickEvent(resp, option, file, path){
 	//alert(resp[option]);
 
 	$('#' + file + '_' + option).on('click', function(){
 
 	    active = $('#tabs').tabs("option","active") + 1;
-	    
-	    gridster = $("#gridster" + active).gridster().data('gridster');
-	    next = gridster.serialize().length;
 
-	    gridster.add_widget('<li class="new externalGraph"><div class="widgetTitle">' + file + '-' + option + '</div><div id="graph_' + active 
-	    	+ '_' + next + '" class="innerGraph"></div></li>', 1, 1, (next%widthWidgets) + 1, ~~(next/widthWidgets) + 1);
-
-	    graphJson = {};
-	    graphJson.id = "graph_" + active + "_" + next;
-	    graphJson.x = resp.date;
-	    graphJson.y = resp[option];
-	    graphJson.title = file + '-' + option;
-
-	    graphInfo["graph_" + active + "_" + next] = graphJson;
-
-	    drawGraph(active, next, resp, option);
+	    addWidgetToGridster("", path, option, file + '-' + option, active, resp);
     
     	$('#addPanelCommit').panel("close");
 
 	});
 }
 
-function drawGraph(activeTab, graphIndex, resp, option){
+function getWidgetFromJSON(widget, gridsterIndex){
+
+	url = widget.file;
+
+	$.ajax({
+		type:'GET',
+		url: url,
+		datatype: 'json',
+		async: false,
+		success: function(resp){
+
+			console.log(widget.id);
+
+			addWidgetToGridster(widget.id, widget.file, widget.option, widget.title, gridsterIndex, resp);
+
+		}
+	});
+
+}
+
+function drawGraph(id, resp, option){
 
 	date = resp.date;
 	data = resp[option];
@@ -197,42 +225,8 @@ function drawGraph(activeTab, graphIndex, resp, option){
         }
   	};
 
-  	container = document.getElementById('graph_' + activeTab + '_' + graphIndex);
-      
-  	Flotr.draw(container,[toDraw],options);
-
-}
-
-function drawGraphFromJson(id, date, data){
-
-	toDraw = [];
-
-    for(i = 0; i< data.length;i++){
-	    toDraw[i] = [i,parseInt(data[i])];
-    }
-	
-	options = {
-        HtmlText : false,
-        xaxis : {
-        	tickFormatter: function(x){
-        		x = parseInt(x);
-        		return date[x];
-        	}
-        },
-        yaxis : {
-        	max : Math.max.apply(Math, data) + 1
-        },
-        mouse:{
-          track: true,
-          relative: true,
-          position: 'nw',
-          trackFormatter: function(obj){return 'x = ' + date[parseInt(obj.x)] + ', y = ' + obj.y;},
-          sensibility : 200
-        }
-  	};
- 
   	container = document.getElementById(id);
-
+      
   	Flotr.draw(container,[toDraw],options);
 
 }
@@ -240,6 +234,20 @@ function drawGraphFromJson(id, date, data){
 function get(name){
    if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
       return decodeURIComponent(name[1]);
+}
+
+function addTab(tabIndex, tabName){
+
+	$("#tabList").append("<li><a href='#tab" + tabIndex + "' id='tabLink" + tabIndex + 
+		"' contenteditable='true' spellcheck='false' title='Click to edit tab title'>" + tabName + "</a></li>");
+
+	$("#tabs").append("<div id='tab"+ tabIndex +"'><div class='gridster'><ul id='gridster" + tabIndex + "'></ul></div></div>");
+	$("#tabs").tabs("refresh");
+
+	$('#tabLink' + tabIndex).on('blur', function(){
+		if($('#tabLink' + tabIndex).html() == '')
+			$('#tabLink' + tabIndex).html('#' + tabIndex);
+	});
 }
 
 function visualizeSharedDashboard(hashParam){
@@ -257,39 +265,20 @@ function visualizeSharedDashboard(hashParam){
 			$.each(tabs, function(i,item){
 
 				if(i != 0){
-					$("#tabList").append("<li><a href='#tab" + (i + 1) + "' id='tabLink" + (i + 1) + 
-						"' contenteditable='true' spellcheck='false' title='Click to edit tab title'>" + item.name + "</a></li>");
 
-					$("#tabs").append("<div id='tab"+ (i + 1) +"'><div class='gridster'><ul id='gridster" + (i + 1) + "'></ul></div></div>");
-					$("#tabs").tabs("refresh");
+					index = i + 1;
 
-					$('#tabLink' + (i + 1)).on('blur', function(){
-						if($('#tabLink' + (i + 1)).html() == '')
-							$('#tabLink' + (i + 1)).html('#' + (i + 1));
-					});
+					addTab(index,item.name);
 				}
 
 				$('#tabLink' + (i+1)).click();
 
 				if(item.widgets != undefined){
 					$.each(item.widgets, function(j, item2){
-						gridster = $("#gridster" + (i + 1)).gridster().data('gridster');
-
-						next = gridster.serialize().length;
+						
 						widget = widgets[item2.id];
 
-						gridster.add_widget('<li class="new externalGraph"><div class="widgetTitle">' + widget.title + '</div><div id="' + widget.id 
-					    	+ '" class="innerGraph"></div></li>', 1, 1, (next%widthWidgets) + 1, ~~(next/widthWidgets) + 1);
-
-					    graphJson = {};
-					    graphJson.id = widget.id;
-					    graphJson.x = widget.x;
-					    graphJson.y = widget.y;
-					    graphJson.title = widget.title;
-
-					    graphInfo[widget.id] = graphJson;
-
-					    drawGraphFromJson(widget.id, widget.x, widget.y);
+						getWidgetFromJSON(widget, i+1)
 					});
 				}
 
@@ -314,17 +303,11 @@ $(document).ready(function(){
 	});
 
 	$('#addTabButton').on('click', function(){
-		var num_tabs = $("#tabList li").length + 1;
-		$("#tabList").append("<li><a href='#tab" + num_tabs + "' id='tabLink" + num_tabs + 
-			"' contenteditable='true' spellcheck='false' title='Click to edit tab title'>#" + num_tabs + "</a></li>");
+		
+		index = $("#tabList li").length + 1;
 
-		$("#tabs").append("<div id='tab"+num_tabs+"'><div class='gridster'><ul id='gridster" + num_tabs + "'></ul></div></div>");
-		$("#tabs").tabs("refresh");
+		addTab(index, '#' + index);
 
-		$('#tabLink' + num_tabs).on('blur', function(){
-			if($('#tabLink' + num_tabs).html() == '')
-				$('#tabLink' + num_tabs).html('#' + num_tabs);
-		});
 	});
 
 	$('#shareButton').on('click', function(){
