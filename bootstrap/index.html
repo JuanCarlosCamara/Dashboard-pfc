@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Multi level dropdown</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link href="bootstrap2.3.2/css/bootstrap.min.css" rel="stylesheet" media="screen" />
+		<link href="bootstrap2.3.2/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen" />
+	</head>
+	<body>
+		<div class="navbar">
+		  <div class="navbar-inner">
+		    <div class="container">
+		 
+		      <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+		      <a class="btn btn-navbar" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		      </a>
+		 
+		      <!-- Be sure to leave the brand out there if you want it shown -->
+		      <p class="brand .navbar-text">Project name</p>
+		      <!-- Everything you want hidden at 940px or less, place within here -->
+		      <div class="nav-collapse collapse navbar-responsive-collapse">
+		        <!-- .nav, .navbar-search, .navbar-form, etc -->
+		        <ul class="nav">
+			      <li>
+			      	<a href="#" id="addChartLink">Add chart</a>
+			      </li>
+			      <li>
+			      	<a href="#" id="shareDashboardLink">Share dashboard</a>
+			      </li>
+			      <li>
+			      	<a href="#" id="addTabLink">Add tab</a>
+			      </li>
+			    </ul>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+		<div class="container-fluid">
+			<div class="row-fluid">
+				<div class="span2 hide" id="left_column">
+					<div class="well">
+					    <div >
+					        <ul class="nav nav-list">
+					            <li><label class="tree-toggler nav-header">Header 1</label>
+					                <ul class="nav nav-list tree">
+					                    <li><a href="#">Link</a></li>
+					                    <li><a href="#">Link</a></li>
+					                    <li><label class="tree-toggler nav-header">Header 1.1</label>
+					                        <ul class="nav nav-list tree">
+					                            <li><a href="#">Link</a></li>
+					                            <li><a href="#">Link</a></li>
+					                            <li><label class="tree-toggler nav-header">Header 1.1.1</label>
+					                                <ul class="nav nav-list tree">
+					                                    <li><a href="#">Link</a></li>
+					                                    <li><a href="#">Link</a></li>
+					                                </ul>
+					                            </li>
+					                        </ul>
+					                    </li>
+					                </ul>
+					            </li>
+					            <li class="divider"></li>
+					            <li><label class="tree-toggler nav-header">Header 2</label>
+					                <ul class="nav nav-list tree">
+					                    <li><a href="#">Link</a></li>
+					                    <li><a href="#">Link</a></li>
+					                    <li><label class="tree-toggler nav-header">Header 2.1</label>
+					                        <ul class="nav nav-list tree">
+					                            <li><a href="#">Link</a></li>
+					                            <li><a href="#">Link</a></li>
+					                            <li><label class="tree-toggler nav-header">Header 2.1.1</label>
+					                                <ul class="nav nav-list tree">
+					                                    <li><a href="#">Link</a></li>
+					                                    <li><a href="#">Link</a></li>
+					                                </ul>
+					                            </li>
+					                        </ul>
+					                    </li>
+					                    <li><label class="tree-toggler nav-header">Header 2.2</label>
+					                        <ul class="nav nav-list tree">
+					                            <li><a href="#">Link</a></li>
+					                            <li><a href="#">Link</a></li>
+					                            <li><label class="tree-toggler nav-header">Header 2.2.1</label>
+					                                <ul class="nav nav-list tree">
+					                                    <li><a href="#">Link</a></li>
+					                                    <li><a href="#">Link</a></li>
+					                                </ul>
+					                            </li>
+					                        </ul>
+					                    </li>
+					                </ul>
+					            </li>
+					        </ul>
+					    </div>
+					</div>
+				</div>
+				<div id="right_column" >
+					<div class="tabbable"> <!-- Only required for left/right tabs -->
+					  <ul class="nav nav-tabs">
+					    <li class="active"><a href="#tab1" data-toggle="tab">Section 1</a></li>
+					    <li><a href="#tab2" data-toggle="tab">Section 2</a></li>
+					  </ul>
+					  <div class="tab-content">
+					    <div class="tab-pane active" id="tab1">
+					      <p>I'm in Section 1.</p>
+					    </div>
+					    <div class="tab-pane" id="tab2">
+					      <p>Howdy, I'm in Section 2.</p>
+					    </div>
+					  </div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="http://code.jquery.com/jquery.js"></script>
+		<script src="bootstrap2.3.2/js/bootstrap.min.js"></script>
+		<script>
+			$(document).ready(function(){
+				$(".nav-collapse").collapse();
+
+				$('#addChartLink').on('click', function(){
+
+					if($('#left_column').hasClass('hide')){
+						$('#left_column').removeClass('hide');
+						$('#right_column').removeClass('span12');
+						$('#right_column').addClass('span10');
+					}else{
+						$('#left_column').addClass('hide');
+						$('#right_column').addClass('span12');
+						$('#right_column').removeClass('span10');
+					}
+					
+				});
+
+				$('label.tree-toggler').click(function () {
+					$(this).parent().children('ul.tree').toggle(300);
+				});
+
+				$('#addTabLink').on('click', function(){
+					var numTabs = $('.nav-tabs li').length;
+					$('.nav-tabs').append('<li><a href="#tab' + (numTabs + 1) + '" data-toggle="tab">Section '+ (numTabs + 1) +'</a></li>');
+					$('.tab-content').append('<div class="tab-pane" id="tab' + (numTabs + 1) + '"></div>');
+				});
+			});
+		</script>
+	</body>
+</html>
