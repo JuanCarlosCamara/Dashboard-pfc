@@ -126,11 +126,9 @@
 
 					if($('#left_column').hasClass('hide')){
 						$('#left_column').removeClass('hide');
-						$('#right_column').removeClass('span12');
 						$('#right_column').addClass('span10');
 					}else{
 						$('#left_column').addClass('hide');
-						$('#right_column').addClass('span12');
 						$('#right_column').removeClass('span10');
 					}
 					
@@ -143,7 +141,7 @@
 				$('#addTabLink').on('click', function(){
 					var numTabs = $('.nav-tabs li').length;
 					$('.nav-tabs').append('<li><a href="#tab' + (numTabs + 1) + '" data-toggle="tab">Section '+ (numTabs + 1) +'</a></li>');
-					$('.tab-content').append('<div class="tab-pane" id="tab' + (numTabs + 1) + '"></div>');
+					$('.tab-content').append('<div class="tab-pane fade" id="tab' + (numTabs + 1) + '"></div>');
 				});
 			});
 		</script>
