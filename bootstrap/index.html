@@ -4,8 +4,10 @@
 		<title>Multi level dropdown</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<link href="bootstrap2.3.2/css/bootstrap.min.css" rel="stylesheet" media="screen" />
-		<link href="bootstrap2.3.2/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen" />
+		<link href="VizGrimoireJS/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen" />
+		<!--<link rel="stylesheet" type="text/css" href="VizGrimoireJS/vizgrimoire.css" />-->
+		<link href="VizGrimoireJS/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen" />
+		<link href="css/jquery.gridster.min.css" rel="stylesheet" />
 	</head>
 	<body>
 		<div class="navbar">
@@ -45,51 +47,42 @@
 					<div class="well">
 					    <div >
 					        <ul class="nav nav-list">
-					            <li><label class="tree-toggler nav-header">Header 1</label>
+					            <li><label class="tree-toggler nav-header">Metrics Evol</label>
 					                <ul class="nav nav-list tree">
-					                    <li><a href="#">Link</a></li>
-					                    <li><a href="#">Link</a></li>
-					                    <li><label class="tree-toggler nav-header">Header 1.1</label>
+					                    <li><label class="tree-toggler nav-header">ITS</label>
 					                        <ul class="nav nav-list tree">
-					                            <li><a href="#">Link</a></li>
-					                            <li><a href="#">Link</a></li>
-					                            <li><label class="tree-toggler nav-header">Header 1.1.1</label>
-					                                <ul class="nav nav-list tree">
-					                                    <li><a href="#">Link</a></li>
-					                                    <li><a href="#">Link</a></li>
-					                                </ul>
-					                            </li>
+					                            <li><a href="#" class="addChartLink" data-class="MetricsEvol" data-source="its" data-metrics="its_opened">its_opened</a></li>
+					                            <li><a href="#" class="addChartLink" data-class="MetricsEvol" data-source="its" data-metrics="its_closed">its_closed</a></li>
+					                            <li><a href="#" class="addChartLink" data-class="MetricsEvol" data-source="its" data-metrics="its_openers">its_openers</a></li>
+					                            <li><a href="#" class="addChartLink" data-class="MetricsEvol" data-source="its" data-metrics="its_closers">its_closers</a></li>
+					                            <li><a href="#" class="addChartLink" data-class="MetricsEvol" data-source="its" data-metrics="its_changed">its_changed</a></li>
+					                            <li><a href="#" class="addChartLink" data-class="MetricsEvol" data-source="its" data-metrics="its_changers">its_changers</a></li>
 					                        </ul>
 					                    </li>
+					                    <li><label class="tree-toggler nav-header">SCM</label>
+					                        <ul class="nav nav-list tree">
+					                            <li><a href="#" class="addChartLink" data-class="MetricsEvol" data-source="scm" data-metrics="scm_commits">scm_commits</a></li>
+					                            <li><a href="#" class="addChartLink" data-class="MetricsEvol" data-source="scm" data-metrics="scm_authors">scm_authors</a></li>
+					                            <li><a href="#" class="addChartLink" data-class="MetricsEvol" data-source="scm" data-metrics="scm_files">scm_files</a></li>
+					                            <li><a href="#" class="addChartLink" data-class="MetricsEvol" data-source="scm" data-metrics="scm_added_lines">scm_added_lines</a></li>
+					                            <li><a href="#" class="addChartLink" data-class="MetricsEvol" data-source="scm" data-metrics="scm_removed_lines">scm_removed_lines</a></li>
+					                            <li><a href="#" class="addChartLink" data-class="MetricsEvol" data-source="scm" data-metrics="scm_repositories">scm_repositories</a></li>
+					                            <li><a href="#" class="addChartLink" data-class="MetricsEvol" data-source="scm" data-metrics="scm_domains">scm_domains</a></li>
+					                        </ul>
+					                    </li>
+
 					                </ul>
 					            </li>
-					            <li class="divider"></li>
-					            <li><label class="tree-toggler nav-header">Header 2</label>
+					            <li><label class="tree-toggler nav-header">Top</label>
 					                <ul class="nav nav-list tree">
-					                    <li><a href="#">Link</a></li>
-					                    <li><a href="#">Link</a></li>
-					                    <li><label class="tree-toggler nav-header">Header 2.1</label>
+					                    <li><label class="tree-toggler nav-header">ITS</label>
 					                        <ul class="nav nav-list tree">
-					                            <li><a href="#">Link</a></li>
-					                            <li><a href="#">Link</a></li>
-					                            <li><label class="tree-toggler nav-header">Header 2.1.1</label>
-					                                <ul class="nav nav-list tree">
-					                                    <li><a href="#">Link</a></li>
-					                                    <li><a href="#">Link</a></li>
-					                                </ul>
-					                            </li>
+					                            <li><a href="#">closers</a></li>
 					                        </ul>
 					                    </li>
-					                    <li><label class="tree-toggler nav-header">Header 2.2</label>
+					                    <li><label class="tree-toggler nav-header">SCM</label>
 					                        <ul class="nav nav-list tree">
-					                            <li><a href="#">Link</a></li>
-					                            <li><a href="#">Link</a></li>
-					                            <li><label class="tree-toggler nav-header">Header 2.2.1</label>
-					                                <ul class="nav nav-list tree">
-					                                    <li><a href="#">Link</a></li>
-					                                    <li><a href="#">Link</a></li>
-					                                </ul>
-					                            </li>
+					                            <li><a href="#">authors</a></li>
 					                        </ul>
 					                    </li>
 					                </ul>
@@ -102,25 +95,52 @@
 					<div class="tabbable"> <!-- Only required for left/right tabs -->
 					  <ul class="nav nav-tabs">
 					    <li class="active"><a href="#tab1" data-toggle="tab">Section 1</a></li>
-					    <li><a href="#tab2" data-toggle="tab">Section 2</a></li>
 					  </ul>
 					  <div class="tab-content">
 					    <div class="tab-pane active" id="tab1">
-					      <p>I'm in Section 1.</p>
-					    </div>
-					    <div class="tab-pane" id="tab2">
-					      <p>Howdy, I'm in Section 2.</p>
+					      <div class="gridster">
+		              <ul id="gridster1"></ul>
+		            </div>
 					    </div>
 					  </div>
 					</div>
 				</div>
 			</div>
 		</div>
-		<script src="http://code.jquery.com/jquery.js"></script>
-		<script src="bootstrap2.3.2/js/bootstrap.min.js"></script>
+		<script src="VizGrimoireJS/lib/jquery-1.7.1.min.js"></script>
+		<script src="VizGrimoireJS/bootstrap/js/bootstrap.min.js"></script>
+		<script src="VizGrimoireJS/vizgrimoire.min.js"></script>
+		<script src="js/jquery.gridster.min.js"></script>
 		<script>
 			$(document).ready(function(){
-				$(".nav-collapse").collapse();
+
+				width = $('#gridster1').width();
+
+				if(width > 1000)
+					widthWidgets = 3;
+				else if (width > 666) 
+					widthWidgets = 2;
+				else
+					widthWidgets = 1;
+
+				$("#gridster1").gridster({
+					widget_margins: [10, 10],
+					widget_base_dimensions: [(width-widthWidgets*10)/widthWidgets, (width-widthWidgets*10)/(2*widthWidgets)],
+					// draggable: {
+					//   handle: '.widgetTitle'
+					// },
+					// serialize_params: function($w, wgd){ 
+
+				 //    return { 
+			  //          id: $($w).attr('id'), 
+			  //          col: wgd.col, 
+			  //          row: wgd.row, 
+			  //          size_x: wgd.size_x, 
+			  //          size_y: wgd.size_y, 
+			  //          htmlContent : $($w).html() 
+				 //    };
+					// }
+				});
 
 				$('#addChartLink').on('click', function(){
 
@@ -141,8 +161,26 @@
 				$('#addTabLink').on('click', function(){
 					var numTabs = $('.nav-tabs li').length;
 					$('.nav-tabs').append('<li><a href="#tab' + (numTabs + 1) + '" data-toggle="tab">Section '+ (numTabs + 1) +'</a></li>');
-					$('.tab-content').append('<div class="tab-pane fade" id="tab' + (numTabs + 1) + '"></div>');
+					$('.tab-content').append('<div class="tab-pane fade" id="tab' + (numTabs + 1) + '"><div class="gridster"><ul id="gridster' + (numTabs + 1) + '"></ul></div></div>');
 				});
+
+				$('.addChartLink').on('click', function(e){
+					console.log(e.currentTarget.attributes);
+					var activeTab = getActiveTabNumber();
+					console.log(activeTab);
+
+					gridster = $("#gridster" + activeTab).gridster().data('gridster');
+					next = gridster.serialize().length;
+					gridster.add_widget('<div class="MetricsEvol" data-data-source="scm" data-metrics="scm_commits" data-min="true" style="height:45px; background:#aaaaaa"></div>', 1, 1, (next%widthWidgets) + 1, ~~(next/widthWidgets) + 1);
+				});
+
+				function getActiveTabNumber(){
+					var tabs = $('.nav.nav-tabs li');
+					for(i = 0; i < tabs.length; i++){
+						if($(tabs[i]).hasClass('active'))
+							return i + 1;
+					}
+				}
 			});
 		</script>
 	</body>
