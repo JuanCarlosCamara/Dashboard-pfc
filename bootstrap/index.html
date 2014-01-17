@@ -43,55 +43,100 @@
 		</div>
 		<div class="container-fluid">
 			<div class="row-fluid">
-				<div class="span2 hide" id="left_column">
-					<div class="well">
-					    <div >
-					        <ul class="nav nav-list">
-					            <li><label class="tree-toggler nav-header">Metrics Evol</label>
-					                <ul class="nav nav-list tree">
-					                    <li><label class="tree-toggler nav-header">ITS</label>
-					                        <ul class="nav nav-list tree">
-					                            <li><a href="#" class="addChartLink" data-class="MetricsEvol" data-source="its" data-metrics="its_opened">its_opened</a></li>
-					                            <li><a href="#" class="addChartLink" data-class="MetricsEvol" data-source="its" data-metrics="its_closed">its_closed</a></li>
-					                            <li><a href="#" class="addChartLink" data-class="MetricsEvol" data-source="its" data-metrics="its_openers">its_openers</a></li>
-					                            <li><a href="#" class="addChartLink" data-class="MetricsEvol" data-source="its" data-metrics="its_closers">its_closers</a></li>
-					                            <li><a href="#" class="addChartLink" data-class="MetricsEvol" data-source="its" data-metrics="its_changed">its_changed</a></li>
-					                            <li><a href="#" class="addChartLink" data-class="MetricsEvol" data-source="its" data-metrics="its_changers">its_changers</a></li>
-					                        </ul>
-					                    </li>
-					                    <li><label class="tree-toggler nav-header">SCM</label>
-					                        <ul class="nav nav-list tree">
-					                            <li><a href="#" class="addChartLink" data-class="MetricsEvol" data-source="scm" data-metrics="scm_commits">scm_commits</a></li>
-					                            <li><a href="#" class="addChartLink" data-class="MetricsEvol" data-source="scm" data-metrics="scm_authors">scm_authors</a></li>
-					                            <li><a href="#" class="addChartLink" data-class="MetricsEvol" data-source="scm" data-metrics="scm_files">scm_files</a></li>
-					                            <li><a href="#" class="addChartLink" data-class="MetricsEvol" data-source="scm" data-metrics="scm_added_lines">scm_added_lines</a></li>
-					                            <li><a href="#" class="addChartLink" data-class="MetricsEvol" data-source="scm" data-metrics="scm_removed_lines">scm_removed_lines</a></li>
-					                            <li><a href="#" class="addChartLink" data-class="MetricsEvol" data-source="scm" data-metrics="scm_repositories">scm_repositories</a></li>
-					                            <li><a href="#" class="addChartLink" data-class="MetricsEvol" data-source="scm" data-metrics="scm_domains">scm_domains</a></li>
-					                        </ul>
-					                    </li>
-
-					                </ul>
-					            </li>
-					            <li><label class="tree-toggler nav-header">Top</label>
-					                <ul class="nav nav-list tree">
-					                    <li><label class="tree-toggler nav-header">ITS</label>
-					                        <ul class="nav nav-list tree">
-					                            <li><a href="#">closers</a></li>
-					                        </ul>
-					                    </li>
-					                    <li><label class="tree-toggler nav-header">SCM</label>
-					                        <ul class="nav nav-list tree">
-					                            <li><a href="#">authors</a></li>
-					                        </ul>
-					                    </li>
-					                </ul>
-					            </li>
-					        </ul>
+				<div class="span2" id="left_column">
+					<div class="accordion" id="accordion2">
+					  <div class="accordion-group">
+					    <div class="accordion-heading">
+					      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
+					        Metrics Evol
+					      </a>
 					    </div>
+					    <div id="collapseOne" class="accordion-body collapse">
+					      <div class="accordion-inner">
+					        <div class="accordion" id="accordion2_1">
+					        	<div class="accordion-group">
+					        		<div class="accordion-heading">
+					        			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2_1" href="#collapseOneOne">
+									        ITS
+									      </a>
+					        		</div>
+					        		<div id="collapseOneOne" class="accordion-body collapse">
+					        			<div class="accordion-inner">
+					        				<ul class="nav nav-list">
+                            <li><a href="#" class="addChartLink" data-class="MetricsEvol" data-source="its" data-metrics="its_opened">its_opened</a></li>
+                            <li><a href="#" class="addChartLink" data-class="MetricsEvol" data-source="its" data-metrics="its_closed">its_closed</a></li>
+                            <li><a href="#" class="addChartLink" data-class="MetricsEvol" data-source="its" data-metrics="its_openers">its_openers</a></li>
+                            <li><a href="#" class="addChartLink" data-class="MetricsEvol" data-source="its" data-metrics="its_closers">its_closers</a></li>
+                            <li><a href="#" class="addChartLink" data-class="MetricsEvol" data-source="its" data-metrics="its_changed">its_changed</a></li>
+                            <li><a href="#" class="addChartLink" data-class="MetricsEvol" data-source="its" data-metrics="its_changers">its_changers</a></li>
+                        	</ul>
+					        			</div>
+					        		</div>
+					        	</div>
+					        	<div class="accordion-group">
+					        		<div class="accordion-heading">
+					        			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2_1" href="#collapseOneTwo">
+									        SCM
+									      </a>
+					        		</div>
+					        		<div id="collapseOneTwo" class="accordion-body collapse">
+					        			<div class="accordion-inner">
+					        				<ul class="nav nav-list tree">
+                            <li><a href="#" class="addChartLink" data-class="MetricsEvol" data-source="scm" data-metrics="scm_commits">scm_commits</a></li>
+                            <li><a href="#" class="addChartLink" data-class="MetricsEvol" data-source="scm" data-metrics="scm_authors">scm_authors</a></li>
+                            <li><a href="#" class="addChartLink" data-class="MetricsEvol" data-source="scm" data-metrics="scm_files">scm_files</a></li>
+                            <li><a href="#" class="addChartLink" data-class="MetricsEvol" data-source="scm" data-metrics="scm_added_lines">scm_added_lines</a></li>
+                            <li><a href="#" class="addChartLink" data-class="MetricsEvol" data-source="scm" data-metrics="scm_removed_lines">scm_removed_lines</a></li>
+                            <li><a href="#" class="addChartLink" data-class="MetricsEvol" data-source="scm" data-metrics="scm_repositories">scm_repositories</a></li>
+                            <li><a href="#" class="addChartLink" data-class="MetricsEvol" data-source="scm" data-metrics="scm_domains">scm_domains</a></li>
+                        	</ul>
+					        			</div>
+					        		</div>
+					        	</div>
+					        </div>
+					      </div>
+					    </div>
+					  </div>
+					  <div class="accordion-group">
+					    <div class="accordion-heading">
+					      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
+					        Top
+					      </a>
+					    </div>
+					    <div id="collapseTwo" class="accordion-body collapse">
+					      <div class="accordion-inner">
+					        <div class="accordion" id="accordion2_2">
+					        	<div class="accordion-group">
+					        		<div class="accordion-heading">
+					        			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2_2" href="#collapseTwoOne">
+									        ITS
+									      </a>
+					        		</div>
+					        		<div id="collapseTwoOne" class="accordion-body collapse">
+					        			<div class="accordion-inner">
+					        				
+					        			</div>
+					        		</div>
+					        	</div>
+					        	<div class="accordion-group">
+					        		<div class="accordion-heading">
+					        			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2_2" href="#collapseTwoTwo">
+									        SCM
+									      </a>
+					        		</div>
+					        		<div id="collapseTwoTwo" class="accordion-body collapse">
+					        			<div class="accordion-inner">
+					        				
+					        			</div>
+					        		</div>
+					        	</div>
+					        </div>
+					      </div>
+					    </div>
+					  </div>
 					</div>
 				</div>
-				<div id="right_column" >
+				<div class="span10" id="right_column" >
 					<div class="tabbable"> <!-- Only required for left/right tabs -->
 					  <ul class="nav nav-tabs">
 					    <li class="active"><a href="#tab1" data-toggle="tab">Section 1</a></li>
@@ -99,8 +144,8 @@
 					  <div class="tab-content">
 					    <div class="tab-pane active" id="tab1">
 					      <div class="gridster">
-		              <ul id="gridster1"></ul>
-		            </div>
+				            <ul id="gridster1"></ul>
+			              </div>
 					    </div>
 					  </div>
 					</div>
@@ -115,6 +160,7 @@
 			$(document).ready(function(){
 
 				width = $('#gridster1').width();
+
 
 				if(width > 1000)
 					widthWidgets = 3;
@@ -142,21 +188,17 @@
 					// }
 				});
 
-				$('#addChartLink').on('click', function(){
+				// $('#addChartLink').on('click', function(){
 
-					if($('#left_column').hasClass('hide')){
-						$('#left_column').removeClass('hide');
-						$('#right_column').addClass('span10');
-					}else{
-						$('#left_column').addClass('hide');
-						$('#right_column').removeClass('span10');
-					}
+				// 	if($('#left_column').hasClass('hide')){
+				// 		$('#left_column').removeClass('hide');
+				// 		$('#right_column').addClass('span10');
+				// 	}else{
+				// 		$('#left_column').addClass('hide');
+				// 		$('#right_column').removeClass('span10');
+				// 	}
 					
-				});
-
-				$('label.tree-toggler').click(function () {
-					$(this).parent().children('ul.tree').toggle(300);
-				});
+				// });
 
 				$('#addTabLink').on('click', function(){
 					var numTabs = $('.nav-tabs li').length;
