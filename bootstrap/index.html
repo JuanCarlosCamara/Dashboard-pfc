@@ -23,14 +23,12 @@
 		      </a>
 		 
 		      <!-- Be sure to leave the brand out there if you want it shown -->
-		      <p class="brand .navbar-text">Project name</p>
+		      <!--<p class="brand .navbar-text">Project name</p>-->
+		      <a class="brand .navbar-text" id="newDashboardLink" href="#">New dashboard</a>
 		      <!-- Everything you want hidden at 940px or less, place within here -->
 		      <div class="nav-collapse collapse navbar-responsive-collapse">
 		        <!-- .nav, .navbar-search, .navbar-form, etc -->
 		        <ul class="nav">
-			      <li>
-			      	<a href="#" id="addChartLink">Add chart</a>
-			      </li>
 			      <li>
 			      	<a href="#" id="shareDashboardLink">Share dashboard</a>
 			      </li>
@@ -152,6 +150,18 @@
 					</div>
 				</div>
 			</div>
+		</div>
+		<div id="sharingModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		  <div class="modal-header">
+		    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		    <h3 id="myModalLabel">Sharing link</h3>
+		  </div>
+		  <div class="modal-body">
+		    <p id="shareText"></p>
+		  </div>
+		  <div class="modal-footer">
+		    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+		  </div>
 		</div>
 		<script src="VizGrimoireJS/lib/jquery-1.7.1.min.js"></script>
 		<script src="VizGrimoireJS/bootstrap/js/bootstrap.min.js"></script>
