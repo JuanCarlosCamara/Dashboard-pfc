@@ -1,5 +1,40 @@
 var graphInfo = {};
 
+function getFileStructure(){
+	$.ajax({
+		type: 'GET',
+		url: 'data/json/metrics.json',
+		dataType: 'json',
+		async:false,
+		success: function(resp){
+
+			var menuCode = "";
+			var collapseI = 1;
+			console.log(resp);
+			$.each(resp, function(key, value){
+				console.log(key);
+				console.log(value);
+				menuCode += '<div class="accordion-group"><div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#sideAccordionMenu" href="#collapse' + collapseI + '">' + key + ' </a></div>';
+				menuCode += '<div id="collapse' + collapseI + '" class="accordion-body collapse"><div class="accordion-inner">';
+				menuCode += '<div class="acoordion" id="sideAccordionMenu' + collapseI + '">';
+				var collapseJ = 1;
+				$.each(resp[key], function(key2, value2){
+					menuCode += '<div class="accordion-group"><div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#sideAccordionMenu' + collapseI + '" href="#collapse' + collapseI + '_' + collapseJ + '">' + key2 + '</a></div>';
+					menuCode += '<div id="collapse' + collapseI + '_' + collapseJ + '" class="accordion-body collapse"><div class="accordion-inner"><ul class="nav nav-list">'; 
+					$.each(value2, function(index, item){
+						menuCode += '<li><a href="#" class="addChartLink" data-class="' + key + '" data-source="' + key2 + '" data-metrics="' + item + '">' + item + '</a></li>';
+					});
+					menuCode += '</ul></div></div></div>'
+					collapseJ++;
+				});
+				menuCode += '</div></div></div></div>'
+				collapseI++;
+			});
+			$('#sideAccordionMenu').html(menuCode);
+		}
+	});
+}
+
 function getActiveTabNumber(){
 	var tabs = $('.nav.nav-tabs li');
 	for(i = 0; i < tabs.length; i++){
@@ -26,6 +61,18 @@ $(document).ready(function(){
 });
 
 function initFunctions(){
+
+	// function getFileStructure(){
+	// 	$.ajax({
+	// 		type: 'GET',
+	// 		url: 'data/json/metrics.json',
+	// 		dataType: 'json',
+	// 		async:false,
+	// 		success: function(resp){
+	// 			console.log('blablabla');
+	// 		}
+	// 	});
+	// }
 
 	function resizedw(){
 	    Report.convertGlobal();
@@ -134,8 +181,9 @@ function initFunctions(){
 		});
 	});
 
+	getFileStructure();
+
 	width = $('#gridster1').width();
-	console.log(width);
 
 	if(width > 1000)
 		widthWidgets = 3;
@@ -143,9 +191,6 @@ function initFunctions(){
 		widthWidgets = 2;
 	else
 		widthWidgets = 1;
-
-	console.log('width = ' + (width-widthWidgets*10)/widthWidgets);
-	console.log('height = ' + (width-widthWidgets*10)/(2*widthWidgets));
 
 	grid_size = (width-widthWidgets*10)/(2*widthWidgets) - 30;
 	grid_margin = 10;
