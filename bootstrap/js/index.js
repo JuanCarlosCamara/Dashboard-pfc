@@ -22,7 +22,12 @@ function getFileStructure(){
 					menuCode += '<div class="accordion-group"><div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#sideAccordionMenu' + collapseI + '" href="#collapse' + collapseI + '_' + collapseJ + '">' + key2 + '</a></div>';
 					menuCode += '<div id="collapse' + collapseI + '_' + collapseJ + '" class="accordion-body collapse"><div class="accordion-inner"><ul class="nav nav-list">'; 
 					$.each(value2, function(index, item){
-						menuCode += '<li><a href="#" class="addChartLink" data-class="' + key + '" data-source="' + key2 + '" data-metrics="' + item + '">' + item + '</a></li>';
+						var options = "";
+						$.each(item, function(key3, value3){
+							options += key3 + '="' + value3 + '" ';
+						})
+						menuCode += '<li><a href="#" class="addChartLink" ' + options + '>' + item['data-name'] + '</a></li>'
+						//menuCode += '<li><a href="#" class="addChartLink" data-class="' + key + '" data-source="' + key2 + '" data-metrics="' + item + '">' + item + '</a></li>';
 					});
 					menuCode += '</ul></div></div></div>'
 					collapseJ++;
@@ -50,7 +55,9 @@ function getSpecificGridster(tab){
 $(document).on('click','.tabLink',function(e){
 	activeTab = getActiveTabNumber();
 	$('.MetricsEvol').removeClass('MetricsEvol').addClass('MetricsEvolHidden');
+	$('.Top').removeClass('Top').addClass('TopHidden');
 	$('#gridster' + activeTab + ' .MetricsEvolHidden').removeClass('MetricsEvolHidden').addClass('MetricsEvol');
+	$('#gridster' + activeTab + ' .TopHidden').removeClass('TopHidden').addClass('Top');
 })
 
 $(document).ready(function(){
@@ -97,7 +104,7 @@ function initFunctions(){
 			}
 		}
 
-		gridster.add_widget('<li id="' + id + '" class="new externalGraph"><div class="widgetTitle">' + title + '</div><div id="graph' + id + '" class="innerGraph ' + optionClass + '" style="width:100%; height:80%" ' + optionsString + ' data-min="true"></div></li>', size_x, size_y, col, row);
+		gridster.add_widget('<li id="' + id + '" class="new externalGraph"><div class="widgetTitle">' + title + '</div><div id="graph' + id + '" class="innerGraph ' + optionClass + '" style="width:100%; height:80%" ' + optionsString + '></div></li>', size_x, size_y, col, row);
 
 		
 	}
@@ -235,31 +242,47 @@ function initFunctions(){
 
 	$('.addChartLink').on('click', function(e){
 		console.log(e.currentTarget.attributes);
-		var attributes = e.currentTarget.attributes;
+		var options = [];
+		for(var i=0; i<e.currentTarget.attributes.length;i++){
+			console.log(e.currentTarget.attributes[i]);
+			if(e.currentTarget.attributes[i].name.indexOf('data-') == 0){
+				var key = e.currentTarget.attributes[i].name.substring(5);
+				if(key != 'name'){	
+					options.push({
+						key: key,
+						value: $(e.currentTarget).attr(e.currentTarget.attributes[i].name)
+					});
+				}
+			}
+		}
+
+		console.log(options);
+		//var attributes = e.currentTarget.attributes;
 		var divClass = $(e.currentTarget).attr('data-class');
-		var divDataSource = $(e.currentTarget).attr('data-source');
-		var divDataMetrics = $(e.currentTarget).attr('data-metrics');
+		var divName = $(e.currentTarget).attr('data-name');
+		//var divDataSource = $(e.currentTarget).attr('data-source');
+		//var divDataMetrics = $(e.currentTarget).attr('data-metrics');
 		var activeTab = getActiveTabNumber();
-		console.log(activeTab);
+		//console.log(activeTab);
 
 		gridster = getSpecificGridster(activeTab);
 		next = gridster.serialize().length;
 		// gridster.add_widget('<div class="MetricsEvol" style="width:80%; height:80%" data-data-source="scm" data-metrics="scm_commits" data-min="false"></div>', 1, 1, (next%widthWidgets) + 1, ~~(next/widthWidgets) + 1);
-		title = divDataSource + '-' + divDataMetrics;
+		title = divClass + '-' + divName;
 		id = "tab" + activeTab + "_" + next;
-		options = [];
-		options.push({
-			key:'class',
-			value:divClass
-		});
-		options.push({
-			key:'data-data-source',
-			value:divDataSource
-		});
-		options.push({
-			key:'data-metrics',
-			value:divDataMetrics
-		});
+		// options = [];
+		// options.push({
+		// 	key:'class',
+		// 	value:divClass
+		// });
+		// options.push({
+		// 	key:'data-data-source',
+		// 	value:divDataSource
+		// });
+		// options.push({
+		// 	key:'data-metrics',
+		// 	value:divDataMetrics
+		// });
 		
 		addWidgetToGridster(gridster, id, title, options, 2, 1, undefined, undefined);
 
