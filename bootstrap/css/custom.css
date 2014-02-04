@@ -19,3 +19,9 @@
   cursor: move;
   border: blue double; 
 }
+
+.closeWidget{
+  padding-right:10px;
+  cursor: pointer;
+  float:right;
+}

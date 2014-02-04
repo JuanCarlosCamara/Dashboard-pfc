@@ -104,7 +104,12 @@ function initFunctions(){
 			}
 		}
 
-		gridster.add_widget('<li id="' + id + '" class="new externalGraph"><div class="widgetTitle">' + title + '</div><div id="graph' + id + '" class="innerGraph ' + optionClass + '" style="width:100%; height:80%" ' + optionsString + '></div></li>', size_x, size_y, col, row);
+		gridster.add_widget('<li id="' + id + '" class="new externalGraph"><div class="widgetTitle">' + title + '<span class="closeWidget">X</span></div><div id="graph' + id + '" class="innerGraph ' + optionClass + '" style="width:100%; height:80%" ' + optionsString + '></div></li>', size_x, size_y, col, row);
+
+		$('#' + id + ' .closeWidget').on('click', function(e){
+			gridster.remove_widget($('#' + id));
+			delete graphInfo[id];
+		});
 
 		
 	}
