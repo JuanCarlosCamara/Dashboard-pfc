@@ -58,12 +58,35 @@ $(document).on('click','.tabLink',function(e){
 	$('.Top').removeClass('Top').addClass('TopHidden');
 	$('#gridster' + activeTab + ' .MetricsEvolHidden').removeClass('MetricsEvolHidden').addClass('MetricsEvol');
 	$('#gridster' + activeTab + ' .TopHidden').removeClass('TopHidden').addClass('Top');
-})
+});
+
+$(document).on('dblclick','.tabLink', function(e){
+
+	$('#changeTabNameModal').modal('show');
+	$('#newTabName').val($(e.currentTarget).html());
+	$('#myModalLabel2').html($(e.currentTarget).html());
+	$('#spanTabName').html($(e.currentTarget).html());
+	$('#hiddenIdTabName').val(e.currentTarget.hash);
+});
+
+$(document).on('click', '#acceptTabName', function(e){
+	var tab = $('#hiddenIdTabName').val();
+	var name = $('#newTabName').val();
+	if(name != ''){
+		$('.tabLink[href="' + tab + '"]').html(name);
+		console.log(name);
+	}
+});
 
 $(document).ready(function(){
 
 	Loader.data_ready(function(){
 		initFunctions();
+
+		$('.nav-tabs li').tooltip({
+			title:'Double click to change tab name',
+			placement: 'bottom'
+		});
 	});
 });
 
@@ -83,6 +106,7 @@ function initFunctions(){
 
 	function resizedw(){
 	    Report.convertGlobal();
+	    Report.convertStudiesGlobal();
 	    Report.convertStudies();
 	}
 
@@ -104,14 +128,17 @@ function initFunctions(){
 			}
 		}
 
-		gridster.add_widget('<li id="' + id + '" class="new externalGraph"><div class="widgetTitle">' + title + '<span class="closeWidget">X</span></div><div id="graph' + id + '" class="innerGraph ' + optionClass + '" style="width:100%; height:80%" ' + optionsString + '></div></li>', size_x, size_y, col, row);
+		gridster.add_widget('<li id="' + id + '" class="new externalGraph"><div class="widgetTitle"><h5>' + title + '<button type="button" class="close closeWidget">&times;</button></h5></div><div id="graph' + id + '" class="innerGraph ' + optionClass + '" style="width:100%; height:80%" ' + optionsString + '></div></li>', size_x, size_y, col, row);
 
 		$('#' + id + ' .closeWidget').on('click', function(e){
 			gridster.remove_widget($('#' + id));
 			delete graphInfo[id];
 		});
 
-		
+		$('.widgetTitle').tooltip({
+			title:'Tss, drag me',
+			placement: 'bottom'
+		});
 	}
 
 	function visualizeSharedDashboard(hashParam){
@@ -125,10 +152,19 @@ function initFunctions(){
 			dataType: 'json',
 			success: function(resp){
 
+				console.log(resp);
+
 				currentTab = 1;
 				gridster = getSpecificGridster(currentTab);
 
-				$.each(resp.graphInfo, function(key, value){
+				$.each(resp.graphInfo.names, function(i, item){
+					if( i != 0){
+						$('#addTabLink').click();
+					};
+					$('.tabLink')[i].innerHTML = item;
+				});
+
+				$.each(resp.graphInfo.graphInfo, function(key, value){
 					console.log(key.split('tab')[1].split('_')[0]);
 					console.log(currentTab);
 					
@@ -156,7 +192,13 @@ function initFunctions(){
 					graphInfo[value.id] = graphJson;
 
 					resizedw();
-				})
+				});
+
+				console.log(resp.graphInfo.names);
+
+				// $.each($('.tabLink'), function(i, item){
+				// 	item.innerHTML = resp.graphInfo.names[i];
+				// });
 			}
 		});
 
@@ -176,11 +218,22 @@ function initFunctions(){
 			});
 		}
 
+		var tabNames = [];
+		$.each($('.tabLink'), function(i,item){
+			tabNames.push(item.innerHTML);
+		});
+		console.log(tabNames);
+
+		var shareObject = {
+			graphInfo : graphInfo,
+			names : tabNames
+		};
+
 		$.ajax({
 			url : '../phpServerSide/GetHashFromTabs.php',
 			type : 'POST',
 			data : {
-				graphInfo : graphInfo
+				graphInfo : shareObject
 			},
 			datatype : 'json',
 			success : function(resp){
@@ -211,7 +264,7 @@ function initFunctions(){
 		widget_margins: [grid_margin,grid_margin],
 		widget_base_dimensions: [grid_size, grid_size],
 		draggable: {
-		    handle: '.widgetTitle'
+		    handle: '.widgetTitle h5'
 		},
 		resize: {
 			enabled: true,
@@ -243,6 +296,11 @@ function initFunctions(){
 		var numTabs = $('.nav-tabs li').length;
 		$('.nav-tabs').append('<li><a href="#tab' + (numTabs + 1) + '" class="tabLink" data-toggle="tab">Section '+ (numTabs + 1) +'</a></li>');
 		$('.tab-content').append('<div class="tab-pane fade" id="tab' + (numTabs + 1) + '"><div class="gridster"><ul id="gridster' + (numTabs + 1) + '"></ul></div></div>');
+
+		$('.nav-tabs li').tooltip({
+			title:'Double click to change tab name',
+			placement: 'bottom'
+		});
 	});
 
 	$('.addChartLink').on('click', function(e){

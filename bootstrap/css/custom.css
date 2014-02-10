@@ -17,7 +17,7 @@
 .widgetTitle{
   height:10%;
   cursor: move;
-  border: blue double; 
+  border-bottom: 1px solid; 
 }
 
 .closeWidget{
