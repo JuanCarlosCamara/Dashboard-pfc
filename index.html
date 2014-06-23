@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Version Control Dashboard</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+		<link rel="stylesheet" type="text/css" href="VizGrimoireJS/vizgrimoire.css" />
+		<link href="VizGrimoireJS/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen" />
+		<link rel="stylesheet" type="text/css" href="css/custom.css" />   
+		<link href="VizGrimoireJS/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen" />
+		<link href="css/jquery.gridster.min.css" rel="stylesheet" />
+	</head>
+	<body>
+		<div class="navbar">
+		  <div class="navbar-inner">
+		    <div class="container">
+		 
+		      <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+		      	<a class="btn btn-navbar" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+		        	<span class="icon-bar"></span>
+		        	<span class="icon-bar"></span>
+		        	<span class="icon-bar"></span>
+		      	</a>
+		 
+		      <!-- Be sure to leave the brand out there if you want it shown -->
+		      <!--<p class="brand .navbar-text">Project name</p>-->
+		      	<a class="brand .navbar-text" id="newDashboardLink" href="#">Version Control Dashboard</a>
+		      <!-- Everything you want hidden at 940px or less, place within here -->
+		        <div class="nav-collapse collapse navbar-responsive-collapse">
+			        <!-- .nav, .navbar-search, .navbar-form, etc -->
+			        <ul class="nav">
+				        <li>
+				      		<a href="#" id="shareDashboardLink">Share dashboard</a>
+				        </li>
+				        <li>
+				      		<a href="#" id="addTabLink">Add tab</a>
+				        </li>
+				    </ul>
+		        </div>
+		    </div>
+		  </div>
+		</div>
+		<div class="container-fluid">
+			<div class="row-fluid">
+				<div class="span2" id="left_column" style="height:100%">
+					<div class="accordion" id="sideAccordionMenu">
+					</div>
+				</div>
+				<div class="span10" id="right_column" >
+					<div class="tabbable"> <!-- Only required for left/right tabs -->
+					    <ul class="nav nav-tabs">
+					        <li class="active"><a href="#tab1" class="tabLink" data-toggle="tab">Section 1</a></li>
+					    </ul>
+				  		<div class="tab-content">
+				    		<div class="tab-pane active" id="tab1">
+				      			<div class="gridster">
+		            				<ul id="gridster1"></ul>
+              					</div>
+				    		</div>
+				  		</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="sharingModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-header">
+			    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			    <h3 id="myModalLabel">Sharing link</h3>
+			</div>
+		    <div class="modal-body">
+			    <p id="shareText"></p>
+			</div>
+			<div class="modal-footer">
+			    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+			</div>
+		</div>
+		<div id="changeTabNameModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h3 id="myModalLabel2"></h3>
+			</div>
+			<div class="modal-body">
+				<p>
+					Insert the new name for tab <span id="spanTabName"></span>.
+				</p>
+				<input id="hiddenIdTabName" class="hide">
+				<input id="newTabName" type="text">
+			</div>
+			<div class="modal-footer">
+			    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+			    <button id="acceptTabName" class="btn btn-primary" data-dismiss="modal">Save changes</button>
+			</div>
+		</div>
+		<script src="VizGrimoireJS/lib/jquery-1.7.1.min.js"></script>
+		<script src="VizGrimoireJS/bootstrap/js/bootstrap.min.js"></script>
+		<script src="VizGrimoireJS/vizgrimoire.min.js"></script>
+		<script src="js/jquery.gridster.min.js"></script>
+		<script src ="js/index.js"></script>
+	</body>
+</html>
